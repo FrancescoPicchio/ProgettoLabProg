@@ -3,4 +3,10 @@ project(progettoLabProg)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(progettoLabProg main.cpp)
+add_executable(progettoLabProg main.cpp
+        User.cpp
+        User.h
+        Account.cpp
+        Account.h
+        Transaction.cpp
+        Transaction.h)

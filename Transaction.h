@@ -6,8 +6,13 @@
 #define PROGETTOLABPROG_TRANSACTION_H
 
 
-class Transaction {
+#include "Account.h"
 
+class Transaction {
+private:
+    Account* sender;
+    Account* receiver;
+    int amount;
 };
 
 
