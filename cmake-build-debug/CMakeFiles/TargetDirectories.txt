@@ -1,0 +1,3 @@
+C:/Users/fpicc/Desktop/ProgramsUni/laboratorio programmazione/progettoLabProg/cmake-build-debug/CMakeFiles/progettoLabProg.dir
+C:/Users/fpicc/Desktop/ProgramsUni/laboratorio programmazione/progettoLabProg/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/fpicc/Desktop/ProgramsUni/laboratorio programmazione/progettoLabProg/cmake-build-debug/CMakeFiles/rebuild_cache.dir
