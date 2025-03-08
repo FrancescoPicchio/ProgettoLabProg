@@ -1,0 +1,14 @@
+//
+// Created by fpicc on 08/03/2025.
+//
+
+#ifndef PROGETTOLABPROG_TRANSACTIONMANAGER_H
+#define PROGETTOLABPROG_TRANSACTIONMANAGER_H
+
+
+class TransactionManager {
+
+};
+
+
+#endif //PROGETTOLABPROG_TRANSACTIONMANAGER_H

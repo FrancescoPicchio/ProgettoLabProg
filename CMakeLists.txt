@@ -9,6 +9,12 @@ add_executable(progettoLabProg main.cpp
         Account.cpp
         Account.h
         Transaction.cpp
-        Transaction.h)
+        Transaction.h
+        AccountManager.cpp
+        AccountManager.h
+        UserManager.cpp
+        UserManager.h
+        TransactionManager.cpp
+        TransactionManager.h)
 
 

@@ -14,10 +14,13 @@
 class User;
 class Transaction;
 enum accountType {checking_account, saving_account};
+/*TODO implement joint accounts, a children class of Account that has two owners, because User.accounts is made up of unique_ptrs
+maybe we can use a map of shared_ptrs as an extra field for a user.*/
 
 class Account {
 private:
-    std::string name; //TODO make sure that the name is unique
+    //TODO implement id generation using a id.txt file
+    std::string name;
     enum accountType type;
     User* owner;
     int balance;
@@ -25,7 +28,6 @@ private:
 
 public:
     Account(std::string n, accountType at, User* u);
-    //~Account();
 
     std::string getName() {
         return name;

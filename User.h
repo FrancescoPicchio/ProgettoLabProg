@@ -17,6 +17,7 @@ class User {
 private:
         std::string name;
         std::string surname;
+        //TODO implement id generation using a id.txt file
         int id;
         //inline lets the variable be defined immediately
         static int inline numberOfUsers = 0; //TODO load numberOfUsers from file correctly
@@ -42,8 +43,6 @@ public:
         }
 
         void makeTransaction(Account* sender, Account* receiver, int amount);
-
-        //~User(); //TODO make the destructor properly
 };
 
 

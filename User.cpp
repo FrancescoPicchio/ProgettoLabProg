@@ -35,10 +35,3 @@ void User::makeTransaction(Account *sender, Account *receiver, int amount) {
         std::cout << "You can't send money from an account you don't own!" << std::endl;
     }
 }
-
-/*User::~User() {
-    for(auto& i : accounts) {
-        delete i.second;
-    }
-    accounts.clear();
-}*/
