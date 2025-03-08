@@ -9,34 +9,41 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <memory>
 #include "Account.h"
+#include "Transaction.h"
 
 class User {
 private:
         std::string name;
         std::string surname;
-        std::map<std::string, Account*> accounts;
+        int id;
+        //inline lets the variable be defined immediately
+        static int inline numberOfUsers = 0; //TODO load numberOfUsers from file correctly
+        std::map<std::string, std::unique_ptr<Account>> accounts;
 
 public:
-        User(std::string n, std::string s): name(n), surname(s){}
+        User(std::string n, std::string s): name(n), surname(s){
+            id = numberOfUsers++;
+        }
+
         void addAccount(Account *a){
-            accounts[a->getName()] = a;
+            accounts.insert(std::make_pair(a->getName(), std::unique_ptr<Account>(a)));
         };
+
         void removeAccount(Account* a){
             accounts.erase(a->getName());
         };
-        void printAccounts(){
-            //prints account names and their associated balance
-            std::cout << getLegalName() + "'s accounts are: " << std::endl;
-            for(auto i = accounts.begin(); i != accounts.end(); ++i) {
-                std::string s = std::to_string(i->second->getBalance());
-                std::cout << i->second->getName() + "with balance:" + s << std::endl;
-            }
-        };
-        std::string getLegalName(){
+
+        void printAccounts () const;
+
+        std::string getLegalName() const{
             return name + " " + surname;
         }
-        ~User();
+
+        void makeTransaction(Account* sender, Account* receiver, int amount);
+
+        //~User(); //TODO make the destructor properly
 };
 
 

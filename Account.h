@@ -7,22 +7,25 @@
 
 
 #include <string>
+#include <vector>
+#include <memory>
 
-//Forward declaration of User class to avoid circular dependencies
+//Forward declaration of User and Transaction classes to avoid circular dependencies
 class User;
-
+class Transaction;
 enum accountType {checking_account, saving_account};
 
 class Account {
 private:
-    std::string name;
+    std::string name; //TODO make sure that the name is unique
     enum accountType type;
     User* owner;
     int balance;
+    std::vector <std::shared_ptr<Transaction>> transactions;
 
 public:
-    Account(std::string n, accountType at, User* u): name(n), type(at), owner(u), balance(0){}
-    ~Account(); //TODO fai distruttore
+    Account(std::string n, accountType at, User* u);
+    //~Account();
 
     std::string getName() {
         return name;
@@ -44,9 +47,9 @@ public:
         balance -= b;
     }
 
-    const User* getOwner(){
+    User* getOwner() const {
         return owner;
-    }
+    };
 
     accountType getType() const {
         return type;
@@ -56,6 +59,9 @@ public:
         type = t;
     }
 
+    void addTransaction(const std::shared_ptr<Transaction>& t) {
+        transactions.push_back(t);
+    }
 };
 
 
