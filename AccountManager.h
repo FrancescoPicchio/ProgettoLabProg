@@ -10,8 +10,8 @@
 #include <fstream>
 #include <sstream>
 #include "Account.h"
-
-//handles io operations for the accounts
+/*
+//handles loading and saving users to a accounts.csv
 class AccountManager {
 private:
     std::string filename;
@@ -48,6 +48,6 @@ public:
         file << acc.accountID << "," << acc.ownerName << "," << acc.balance << "\n";
     }
 };
-
+*/
 
 #endif //PROGETTOLABPROG_ACCOUNTMANAGER_H

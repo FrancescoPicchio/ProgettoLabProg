@@ -20,13 +20,16 @@ private:
         //TODO implement id generation using a id.txt file
         int id;
         //inline lets the variable be defined immediately
-        static int inline numberOfUsers = 0; //TODO load numberOfUsers from file correctly
+        static int inline numberOfUsers = 0; //TODO load numberOfUsers from file correctly, used to assign id for new users
         std::map<std::string, std::unique_ptr<Account>> accounts;
 
 public:
         User(std::string n, std::string s): name(n), surname(s){
             id = numberOfUsers++;
         }
+
+        //TODO implement way to check if id is already taken, and maybe not let anything besides UserManager use this constructor
+        User(std::string n, std::string s, int i): name(n), surname(s), id(i) {};
 
         void addAccount(Account *a){
             accounts.insert(std::make_pair(a->getName(), std::unique_ptr<Account>(a)));

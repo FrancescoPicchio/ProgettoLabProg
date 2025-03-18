@@ -1,5 +1,7 @@
 # Ignore CLion build directories
 cmake-build-*/
+#ignore ide specific settings
+.idea/
 
 # Ignore CMake-generated files
 CMakeCache.txt

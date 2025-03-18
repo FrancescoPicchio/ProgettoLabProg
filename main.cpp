@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include "User.h"
+#include "UserManager.h"
 
+//TODO maybe make this a method for all the manager classes
 void loadData(const std::string& filename) {
     std::ifstream file(filename);  // Try to open the file
     if (!file) {  // If file doesn't exist
@@ -33,6 +35,16 @@ int main() {
     loadData("transactions.csv");
     spaceOutPrints();
 
+    //small piece of code to test if loadusers() works
+    UserManager *um = new UserManager("users.csv");
+    um->loadUsers();
+    std::map<int, std::shared_ptr<User>> users = um->getUsers();
+    std::string username1 = users[1]->getLegalName();
+    std::cout << username1 << std::endl;
+    std::string username2 = users[3]->getLegalName();
+    std::cout << username2 << std::endl;
+
+    /*
     auto *u1 = new User("Gianni", "Rossi");
     auto *a1 = new Account("Conto Banca 1", checking_account, u1);
     a1->setBalance(300);
@@ -41,7 +53,8 @@ int main() {
     u1->makeTransaction(a1, a2, 100);
     std::cout << "First account's balance is: " << a1->getBalance() << std::endl;
     std::cout << "Second account's balance is: " << a2->getBalance() << std::endl;
-    delete u1;
+    delete u1;*/
+    delete um;
 
     return 0;
 }
