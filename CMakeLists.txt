@@ -15,6 +15,8 @@ add_executable(progettoLabProg main.cpp
         UserManager.cpp
         UserManager.h
         TransactionManager.cpp
-        TransactionManager.h)
+        TransactionManager.h
+        IdManager.h
+        IdManager.cpp)
 
 

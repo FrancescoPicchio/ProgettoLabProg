@@ -8,6 +8,7 @@
 
 Account::Account(std::string n, User *u): name(n), owner(u), balance(0){
     u->addAccount(this);
+    id = generateNextId("account_id_tracker.csv");
 }
 
 Account::Account(int i, std::string n, User *u, int b): id(i), name(n), owner(u), balance(b){

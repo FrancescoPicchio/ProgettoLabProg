@@ -15,7 +15,7 @@ void User::printAccounts() const {
 };
 
 void User::makeTransaction(Account *sender, Account *receiver, int amount) {
-    //Only th owner of the account can send money from it
+    //Only the owner of the account can send money from it
     if(this->id == sender->getOwner()->id) {
         //You can't send money you don't have
         if(sender->getBalance() >= amount) {

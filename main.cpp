@@ -3,20 +3,24 @@
 #include "User.h"
 #include "UserManager.h"
 
-//TODO maybe make this a method for all the manager classes
 void loadData(const std::string& filename) {
     std::ifstream file(filename);  // Try to open the file
     if (!file) {  // If file doesn't exist
         std::ofstream newFile(filename);  // Create the file
         if (newFile) {
-            std::cout << filename << "' created successfully.\n";
+            //initializes id counter if it didn't exist
+            //FIXME handle case where the id tracker didn't exist but there are already accounts and users
+            if(filename == "user_id_tracker.csv" || filename == "account_id_tracker.csv"){
+                newFile << "0";
+            }
+            std::cout << filename << " created successfully.\n";
         } else {
             std::cerr << "Error creating file '" << filename << "'.\n"; //cerr is used for error messages
             file.close();
         }
     } else {
         std::cout << filename << " has been loaded.\n";
-        file.close(); //TODO actually load the data
+        file.close();
     }
 }
 
@@ -33,6 +37,8 @@ int main() {
     loadData("users.csv");
     loadData("accounts.csv");
     loadData("transactions.csv");
+    loadData("user_id_tracker.csv");
+    loadData("account_id_tracker.csv");
     spaceOutPrints();
 
     //small piece of code to test if loadusers() works
