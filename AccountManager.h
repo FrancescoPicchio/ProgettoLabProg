@@ -6,48 +6,34 @@
 #define PROGETTOLABPROG_ACCOUNTMANAGER_H
 
 #include <string>
-#include <vector>
 #include <fstream>
 #include <sstream>
+#include <iostream>
+#include <map>
+#include "UserManager.h"
 #include "Account.h"
-/*
+
 //handles loading and saving users to a accounts.csv
+//maybe make AccountManager a singleton to avoid issues
 class AccountManager {
 private:
     std::string filename;
+    //used a normal pointer because accounts should only be deleted if their user is deleted
+    std::map<int, Account*> accounts;
 
 public:
     AccountManager(const std::string fn): filename(fn){};
 
-    // Method to read accounts from a file and return them as a vector of Account objects
-    std::vector<Account> loadAccounts() {
-        std::vector<Account> accounts;
-        std::ifstream file(filename);
-        std::string line;
+    // Method to read accounts from a file and returns true if accounts loaded successfully
+    bool loadAccounts(std::map<int, std::shared_ptr<User>>& users);
 
-        //FIXME chatgpt answer, has incorrect account fields and can't add an owner to the account, because it only stores its name/id
-        while (std::getline(file, line)) {
-            std::stringstream ss(line);
-            int accountID;
-            std::string ownerName;
-            double balance;
+    // Method to save a new account to the CSV file
+    void saveAccount(const Account& acc);
 
-            // Parse CSV line
-            std::getline(ss, ownerName, ',');
-            ss >> accountID;
-            ss.ignore(1, ','); // Ignore the comma
-            ss >> balance;
-        }
+    const std::map<int, Account*>& getAccounts() const {
         return accounts;
     }
-
-    //FIXME chatgpt answer, has incorrect account fields
-    // Method to save a new account to the CSV file
-    void saveAccount(const Account& acc) {
-        std::ofstream file(filename, std::ios::app);
-        file << acc.accountID << "," << acc.ownerName << "," << acc.balance << "\n";
-    }
 };
-*/
+
 
 #endif //PROGETTOLABPROG_ACCOUNTMANAGER_H

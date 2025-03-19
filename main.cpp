@@ -36,12 +36,13 @@ int main() {
     spaceOutPrints();
 
     //small piece of code to test if loadusers() works
-    UserManager *um = new UserManager("users.csv");
+    auto *um = new UserManager("users.csv");
     um->loadUsers();
-    std::map<int, std::shared_ptr<User>> users = um->getUsers();
-    std::string username1 = users[1]->getLegalName();
+    const std::map<int, std::shared_ptr<User>>& users = um->getUsers();
+    // .at(key) throws an exception if key doesn't exist
+    std::string username1 = users.at(1)->getLegalName();
     std::cout << username1 << std::endl;
-    std::string username2 = users[3]->getLegalName();
+    std::string username2 = users.at(3)->getLegalName();
     std::cout << username2 << std::endl;
 
     /*

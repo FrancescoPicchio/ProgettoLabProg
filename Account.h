@@ -20,14 +20,17 @@ maybe we can use a map of shared_ptrs as an extra field for a user.*/
 class Account {
 private:
     //TODO implement id generation using a id.txt file
+    int id;
     std::string name;
-    enum accountType type;
+    //TODO implement account types
+    //enum accountType type;
     User* owner;
     int balance;
     std::vector <std::shared_ptr<Transaction>> transactions;
 
 public:
-    Account(std::string n, accountType at, User* u);
+    Account(std::string n, User* u);
+    Account(int i, std::string n, User* u, int b);
 
     std::string getName() {
         return name;
@@ -53,13 +56,13 @@ public:
         return owner;
     };
 
-    accountType getType() const {
+    /*accountType getType() const {
         return type;
     }
 
     void setType(accountType t){
         type = t;
-    }
+    }*/
 
     void addTransaction(const std::shared_ptr<Transaction>& t) {
         transactions.push_back(t);

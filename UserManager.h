@@ -14,6 +14,7 @@
 #include "User.h"
 
 //handles loading and saving users to user.csv
+//maybe make UserManager a singleton to avoid issues
 class UserManager {
 private:
     std::string filename;
@@ -28,7 +29,6 @@ public:
 
     bool saveUser();
 
-    // Function to get the map of users
     const std::map<int, std::shared_ptr<User>>& getUsers() const {
         return users;
     }
