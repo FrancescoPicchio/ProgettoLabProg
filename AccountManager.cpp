@@ -5,7 +5,7 @@
 #include "AccountManager.h"
 
 //maybe take userManager as argument instead of map to be sure to have the correct map
-bool AccountManager::loadAccounts(std::map<int, std::shared_ptr<User>>& users) {
+bool AccountManager::loadAccounts( const std::map<int, std::shared_ptr<User>>& users) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Could not open the file " << filename << std::endl;
@@ -13,19 +13,22 @@ bool AccountManager::loadAccounts(std::map<int, std::shared_ptr<User>>& users) {
     }
 
     std::string line;
-    std::string id_account_str, name;
+    std::string id_account_str, name, id_owner_str, balance_str;
     //owner id and balance are gotten directly as int type because they're at the end of the line
     int id_account, id_owner, balance;
-    while (std::getline(file, line)) {
+    while(std::getline(file, line)) {
         std::stringstream ss(line);
-        if(std::getline(ss, id_account_str, ',') && std::getline(ss, name, ',') && ss >> id_owner && ss >> balance) {
+        //lines have to be formatted id_account, name, id_owner, balance. Important that id_account is first for faster lookups
+        if(std::getline(ss, id_account_str, ',') && std::getline(ss, name, ',') && std::getline(ss, id_owner_str, ',') && std::getline(ss, balance_str, ',')) {
             id_account = std::stoi(id_account_str);
+            id_owner = std::stoi(id_owner_str);
+            balance = std::stoi(balance_str);
             //.get() converts shared_ptr to normal ptr
             auto *account = new Account(id_account, name, users.at(id_owner).get(), balance);
             accounts[id_account] = account;
-        } else {
+        }else {
             std::cerr << "Error reading line: " << line << std::endl;
-            continue; // Skip malformed lines
+            continue; //skip lines with wrong formatting
         }
     }
 

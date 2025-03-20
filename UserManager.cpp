@@ -16,8 +16,8 @@ bool UserManager::loadUsers() {
     int id;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
-        // csv is structured id,name,surname. Important id first to make it easier to lookup ids faster
-        // the >> operator for stringstream automatically converts string into int
+        //lines have to be formatted id,name,surname. Important id first to make it easier to lookup ids faster
+        //the >> operator for stringstream automatically converts string into int
         if (std::getline(ss, id_str, ',') && std::getline(ss, name, ',') && std::getline(ss, surname, ',')) {
             //converts string into int
             id = std::stoi(id_str);
@@ -26,7 +26,7 @@ bool UserManager::loadUsers() {
             users[id] = user;
         } else {
             std::cerr << "Error reading line: " << line << std::endl;
-            continue; // Skip malformed lines
+            continue; //skips lines with wrong formatting
         }
     }
 

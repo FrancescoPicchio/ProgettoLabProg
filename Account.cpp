@@ -14,3 +14,7 @@ Account::Account(std::string n, User *u): name(n), owner(u), balance(0){
 Account::Account(int i, std::string n, User *u, int b): id(i), name(n), owner(u), balance(b){
     u->addAccount(this);
 }
+
+void Account::printInfo() const {
+    std::cout << "id: " << id << ", name: " << name << ", owner: " << owner->getLegalName() << ", balance: " << balance << std::endl;
+}

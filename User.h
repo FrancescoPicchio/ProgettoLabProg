@@ -26,7 +26,6 @@ public:
             id = generateNextId("user_id_tracker.csv");
         }
 
-        //TODO implement way to check if id is already taken, and maybe not let anything besides UserManager use this constructor
         User(std::string n, std::string s, int i): name(n), surname(s), id(i) {};
 
         void addAccount(Account *a){
@@ -41,6 +40,10 @@ public:
 
         std::string getLegalName() const{
             return name + " " + surname;
+        }
+
+        int getId() const {
+            return id;
         }
 
         void makeTransaction(Account* sender, Account* receiver, int amount);

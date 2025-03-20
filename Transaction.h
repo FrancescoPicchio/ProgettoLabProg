@@ -6,15 +6,21 @@
 #define PROGETTOLABPROG_TRANSACTION_H
 
 #include "Account.h"
+#include <memory>
+#include <iostream>
 
 class Transaction {
 private:
     Account* sender;
     Account* receiver;
     int amount;
-    int fee = 0; //TODO implement fee, it should be different depending if the transaction is between accounts of the same user or not, and maybe other stuff
+    //int fee = 0; //TODO implement fee, it should be different depending if the transaction is between accounts of the same user or not, and maybe other stuff
 public:
-    Transaction(Account* s, Account* r, int a): sender(s), receiver(r), amount(a){}
+    Transaction(Account* s, Account* r, int a): sender(s), receiver(r), amount(a){
+        sender->addTransaction(std::make_shared<Transaction>(*this));
+        receiver->addTransaction(std::make_shared<Transaction>(*this));
+
+    }
 
     int getAmount() const {
         return amount;
@@ -26,6 +32,10 @@ public:
 
     Account* getReceiver() const {
         return receiver;
+    }
+
+    void printInfo() const {
+        std::cout << "sender: " << sender->getName() << ", receiver: " << receiver->getName() << ", amount: " << amount << std::endl;
     }
 
 };

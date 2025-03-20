@@ -16,14 +16,12 @@ void User::printAccounts() const {
 
 void User::makeTransaction(Account *sender, Account *receiver, int amount) {
     //Only the owner of the account can send money from it
-    if(this->id == sender->getOwner()->id) {
+    if(this->id == sender->getOwner()->getId()) {
         //You can't send money you don't have
         if(sender->getBalance() >= amount) {
             auto *t = new Transaction(sender, receiver, amount);
             sender->setBalance(sender->getBalance() - amount);
-            sender->addTransaction(std::make_shared<Transaction>(*t));
             receiver->setBalance(receiver->getBalance() + amount);
-            receiver->addTransaction(std::make_shared<Transaction>(*t));
             std::cout << "Transaction successful!" << std::endl;
             //TODO implement saving transaction to transactions.csv and updating balances on accounts.csv
         }

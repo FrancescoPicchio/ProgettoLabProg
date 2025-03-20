@@ -2,6 +2,8 @@
 #include <fstream>
 #include "User.h"
 #include "UserManager.h"
+#include "AccountManager.h"
+#include "TransactionManager.h"
 
 void loadData(const std::string& filename) {
     std::ifstream file(filename);  // Try to open the file
@@ -9,7 +11,6 @@ void loadData(const std::string& filename) {
         std::ofstream newFile(filename);  // Create the file
         if (newFile) {
             //initializes id counter if it didn't exist
-            //FIXME handle case where the id tracker didn't exist but there are already accounts and users
             if(filename == "user_id_tracker.csv" || filename == "account_id_tracker.csv"){
                 newFile << "0";
             }
@@ -27,7 +28,7 @@ void loadData(const std::string& filename) {
 void spaceOutPrints() {
     //Prints 20 newlines to "clear" the console, helping with readability
     int i;
-    for(i = 0; i < 15; i++) {
+    for(i = 0; i < 8; i++) {
         std::cout << std::endl;
     }
 }
@@ -41,7 +42,7 @@ int main() {
     loadData("account_id_tracker.csv");
     spaceOutPrints();
 
-    //small piece of code to test if loadusers() works
+    //small piece of code to test if loadUsers works
     auto *um = new UserManager("users.csv");
     um->loadUsers();
     const std::map<int, std::shared_ptr<User>>& users = um->getUsers();
@@ -50,6 +51,21 @@ int main() {
     std::cout << username1 << std::endl;
     std::string username2 = users.at(3)->getLegalName();
     std::cout << username2 << std::endl;
+
+    //small piece of code to test if loadAccounts works
+    auto *am = new AccountManager("accounts.csv");
+    am->loadAccounts(um->getUsers());
+    const std::map<int, Account*>& accounts = am->getAccounts();
+    accounts.at(1)->printInfo();
+    accounts.at(2)->printInfo();
+
+    //small piece of code to test if loadTransactions works
+    auto *tm = new TransactionManager("transactions.csv");
+    tm->loadTransactions(accounts);
+    const std::vector<Transaction*> transactions = tm->getTransactions();
+    transactions.at(0)->printInfo();
+    transactions.at(1)->printInfo();
+
 
     /*
     auto *u1 = new User("Gianni", "Rossi");
@@ -62,6 +78,8 @@ int main() {
     std::cout << "Second account's balance is: " << a2->getBalance() << std::endl;
     delete u1;*/
     delete um;
+    delete am;
+    delete tm;
 
     return 0;
 }

@@ -19,7 +19,6 @@ maybe we can use a map of shared_ptrs as an extra field for a user.*/
 
 class Account {
 private:
-    //TODO implement id generation using a id.txt file
     int id;
     std::string name;
     //TODO implement account types
@@ -55,6 +54,12 @@ public:
     User* getOwner() const {
         return owner;
     };
+
+    int getId() const {
+        return id;
+    }
+
+    void printInfo() const;
 
     /*accountType getType() const {
         return type;
