@@ -24,7 +24,7 @@ bool AccountManager::loadAccounts( const std::map<int, std::shared_ptr<User>>& u
             id_owner = std::stoi(id_owner_str);
             balance = std::stoi(balance_str);
             //.get() converts shared_ptr to normal ptr
-            auto *account = new Account(id_account, name, users.at(id_owner).get(), balance);
+            auto *account = new Account(id_account, name, users.at(id_owner).get(), balance, this);
             accounts[id_account] = account;
         }else {
             std::cerr << "Error reading line: " << line << std::endl;

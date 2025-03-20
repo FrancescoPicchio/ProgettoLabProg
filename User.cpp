@@ -4,17 +4,25 @@
 
 #include "User.h"
 #include <memory>
+#include "IdManager.h"
+#include "UserManager.h"
+
+User::User(std::string n, std::string s, UserManager* m): name(n), surname(s), manager(m){
+    id = generateNextId("user_id_tracker.csv");
+    manager->saveUser(this);
+}
 
 void User::printAccounts() const {
     //prints account names and their associated balance
     std::cout << getLegalName() + "'s accounts are: " << std::endl;
     for(auto i = accounts.begin(); i != accounts.end(); ++i) {
         std::string s = std::to_string(i->second->getBalance());
-        std::cout << i->second->getName() + "with balance:" + s << std::endl;
+        std::cout << i->second->getName() + " with balance: " + s << std::endl;
     }
 };
 
-void User::makeTransaction(Account *sender, Account *receiver, int amount) {
+//Passing transactionManager so that I can notify it when the transaction is created
+void User::makeTransaction(Account *sender, Account *receiver, int amount, TransactionManager* tm) {
     //Only the owner of the account can send money from it
     if(this->id == sender->getOwner()->getId()) {
         //You can't send money you don't have

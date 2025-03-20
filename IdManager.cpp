@@ -1,6 +1,7 @@
 //
 // Created by fpicc on 19/03/2025.
 //
+#include <fstream>
 #include "IdManager.h"
 
 //FIXME this implementation of managing ids doesn't work nicely if we have no id tracker file but have got an already initialized objects saved.

@@ -12,28 +12,32 @@
 #include <memory>
 #include "Account.h"
 #include "Transaction.h"
-#include "IdManager.h"
+
+//forward declaration to avoid circular dependencies
+class UserManager;
+class TransactionManager;
 
 class User {
 private:
         std::string name;
         std::string surname;
         int id;
-        std::map<std::string, std::unique_ptr<Account>> accounts;
+        //changed map to map accounts to their ids instead of names, make sure it doesn't create problems
+        std::map<int, std::unique_ptr<Account>> accounts;
+        UserManager* manager;
 
 public:
-        User(std::string n, std::string s): name(n), surname(s){
-            id = generateNextId("user_id_tracker.csv");
-        }
+        //only declare a new user as a shared_ptr, so it can be managed by the UserManager
+        User(std::string n, std::string s, UserManager* m);
 
-        User(std::string n, std::string s, int i): name(n), surname(s), id(i) {};
+        User(std::string n, std::string s, int i, UserManager* m): name(n), surname(s), id(i), manager(m) {};
 
         void addAccount(Account *a){
-            accounts.insert(std::make_pair(a->getName(), std::unique_ptr<Account>(a)));
+            accounts.insert(std::make_pair(a->getId(), std::unique_ptr<Account>(a)));
         };
 
         void removeAccount(Account* a){
-            accounts.erase(a->getName());
+            accounts.erase(a->getId());
         };
 
         void printAccounts () const;
@@ -46,7 +50,15 @@ public:
             return id;
         }
 
-        void makeTransaction(Account* sender, Account* receiver, int amount);
+        std::string getName() const {
+            return name;
+        }
+
+        std::string getSurname() const {
+            return surname;
+        }
+
+        void makeTransaction(Account* sender, Account* receiver, int amount, TransactionManager* tm);
 };
 
 

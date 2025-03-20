@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include "User.h"
 #include "UserManager.h"
 #include "AccountManager.h"
@@ -52,9 +53,16 @@ int main() {
     std::string username2 = users.at(3)->getLegalName();
     std::cout << username2 << std::endl;
 
+    std::shared_ptr<User> user = um->createUser("Sara", "Bianchi");
+    std::cout << user->getLegalName() << std::endl;
+
+    /*
     //small piece of code to test if loadAccounts works
     auto *am = new AccountManager("accounts.csv");
     am->loadAccounts(um->getUsers());
+    //testing print function for a user
+    users.at(1)->printAccounts();
+    //testing print function for accounts
     const std::map<int, Account*>& accounts = am->getAccounts();
     accounts.at(1)->printInfo();
     accounts.at(2)->printInfo();
@@ -65,21 +73,12 @@ int main() {
     const std::vector<Transaction*> transactions = tm->getTransactions();
     transactions.at(0)->printInfo();
     transactions.at(1)->printInfo();
+     */
 
-
-    /*
-    auto *u1 = new User("Gianni", "Rossi");
-    auto *a1 = new Account("Conto Banca 1", checking_account, u1);
-    a1->setBalance(300);
-    auto *a2 = new Account("Conto Banca 2", checking_account, u1);
-    a2->setBalance(500);
-    u1->makeTransaction(a1, a2, 100);
-    std::cout << "First account's balance is: " << a1->getBalance() << std::endl;
-    std::cout << "Second account's balance is: " << a2->getBalance() << std::endl;
-    delete u1;*/
     delete um;
+    /*
     delete am;
     delete tm;
-
+     */
     return 0;
 }

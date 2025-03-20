@@ -5,7 +5,7 @@
 #ifndef PROGETTOLABPROG_IDMANAGER_H
 #define PROGETTOLABPROG_IDMANAGER_H
 
-#include <fstream>
+#include <string>
 
 // Function to get the next available ID
 int generateNextId(const std::string& filename);

@@ -5,9 +5,7 @@
 #ifndef PROGETTOLABPROG_USERMANAGER_H
 #define PROGETTOLABPROG_USERMANAGER_H
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
+
 #include <map>
 #include <memory>
 #include <string>
@@ -18,7 +16,7 @@
 class UserManager {
 private:
     std::string filename;
-    //TODO error handling in pieces of code that use users
+    //TODO error handling in pieces of code that use users to catch possible exceptions thrown by using a bad key
     std::map<int, std::shared_ptr<User>> users;
 
 public:
@@ -27,11 +25,15 @@ public:
     //to be used when the program starts to load all users from csv file onto the field users, returns true if loading is successful
     bool loadUsers();
 
-    bool saveUser();
+    //adds a new user to the csv file
+    bool saveUser(User* u);
 
     const std::map<int, std::shared_ptr<User>>& getUsers() const {
         return users;
     }
+
+    //UserManager manages creating Users because otherwise when a new user is made it can't also be passed in the constructor to the UserManager to add it as a shared ptr to the map
+    std::shared_ptr<User> createUser(const std::string& name, const std::string& surname);
 
 };
 

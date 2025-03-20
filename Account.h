@@ -12,6 +12,7 @@
 
 //Forward declaration of User and Transaction classes to avoid circular dependencies
 class User;
+class AccountManager;
 class Transaction;
 enum accountType {checking_account, saving_account};
 /*TODO implement joint accounts, a children class of Account that has two owners, because User.accounts is made up of unique_ptrs
@@ -26,10 +27,11 @@ private:
     User* owner;
     int balance;
     std::vector <std::shared_ptr<Transaction>> transactions;
+    AccountManager* manager;
 
 public:
-    Account(std::string n, User* u);
-    Account(int i, std::string n, User* u, int b);
+    Account(std::string n, User* u, AccountManager* m);
+    Account(int i, std::string n, User* u, int b, AccountManager* m);
 
     std::string getName() {
         return name;
