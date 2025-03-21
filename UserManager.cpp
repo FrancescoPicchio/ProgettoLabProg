@@ -25,8 +25,8 @@ bool UserManager::loadUsers() {
             //converts string into int
             id = std::stoi(id_str);
             // Create a new user and add to the map (using id as the key)
-            auto user = std::make_shared<User>(name, surname, id, this);
-            users[id] = user;
+            auto user = std::make_unique<User>(name, surname, id, this);
+            users[id] = std::move(user);
         } else {
             std::cerr << "Error reading line: " << line << std::endl;
             continue; //skips lines with wrong formatting
@@ -37,11 +37,12 @@ bool UserManager::loadUsers() {
     return true;
 }
 
-bool UserManager::saveUser(User* u) {
+bool UserManager::saveUser(std::unique_ptr<User> u) {
+    users.insert(std::make_pair(u->getId(), std::move(u)));
     //std::ios::app lets you write to the file without having to truncate the rest
     std::ofstream file(filename, std::ios::app);
     if(!file.is_open()){
-        std::cerr << "Error adding user " << u->getLegalName() << std::endl;
+        std::cerr << "Error saving user " << u->getLegalName() << "to users.csv file" << std::endl;
         return false;
     }
     std::string data = std::to_string(u->getId()) + ',' + u->getName() + ',' + u->getSurname();
@@ -50,8 +51,8 @@ bool UserManager::saveUser(User* u) {
     return true;
 }
 
-std::shared_ptr<User> UserManager::createUser(const std::string& name, const std::string& surname) {
-    auto user = std::make_shared<User>(name, surname, this);
-    users[user->getId()] = user;  // Store in map
+std::unique_ptr<User> UserManager::createUser(const std::string& name, const std::string& surname) {
+    auto user = std::make_unique<User>(name, surname, this);
+    users[user->getId()] = std::move(user);  // Store in map
     return user;
 }

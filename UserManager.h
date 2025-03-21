@@ -17,7 +17,7 @@ class UserManager {
 private:
     std::string filename;
     //TODO error handling in pieces of code that use users to catch possible exceptions thrown by using a bad key
-    std::map<int, std::shared_ptr<User>> users;
+    std::map<int, std::unique_ptr<User>> users;
 
 public:
     UserManager(const std::string fn): filename(fn){};
@@ -26,14 +26,15 @@ public:
     bool loadUsers();
 
     //adds a new user to the csv file
-    bool saveUser(User* u);
+    bool saveUser(std::unique_ptr<User> u);
 
-    const std::map<int, std::shared_ptr<User>>& getUsers() const {
-        return users;
+    User* getUser(int id) const {
+        return users.at(id).get(); //get() passes raw pointer without transferring ownership
     }
 
     //UserManager manages creating Users because otherwise when a new user is made it can't also be passed in the constructor to the UserManager to add it as a shared ptr to the map
-    std::shared_ptr<User> createUser(const std::string& name, const std::string& surname);
+    //FIXME for single resposibility principle this method should be implmented in a Factory class
+    std::unique_ptr<User> createUser(const std::string& name, const std::string& surname);
 
 };
 

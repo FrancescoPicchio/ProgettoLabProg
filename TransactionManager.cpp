@@ -3,6 +3,7 @@
 //
 
 #include "TransactionManager.h"
+#include "User.h"
 
 bool TransactionManager::loadTransactions(const std::map<int, Account*>& accounts) {
     std::ifstream file(filename);
@@ -21,8 +22,10 @@ bool TransactionManager::loadTransactions(const std::map<int, Account*>& account
             id_sender = std::stoi(id_sender_str);
             id_receiver = std::stoi(id_receiver_str);
             amount = std::stoi(amount_str);
-            auto *transaction = new Transaction(accounts.at(id_sender), accounts.at(id_receiver), amount);
-            transactions.push_back(transaction);
+            auto t =  std::make_shared<Transaction>(accounts.at(id_sender), accounts.at(id_receiver), amount);
+            accounts.at(id_sender)->addTransaction(t);
+            accounts.at(id_receiver)->addTransaction(t);
+            transactions.push_back(t.get());
         }else {
             std::cerr << "Error reading line: " << line << std::endl;
             continue; //skips lines with wrong formatting

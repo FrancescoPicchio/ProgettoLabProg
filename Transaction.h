@@ -18,11 +18,7 @@ private:
     //int fee = 0; //TODO implement fee, it should be different depending if the transaction is between accounts of the same user or not, and maybe other stuff
 
 public:
-    Transaction(Account* s, Account* r, int a): sender(s), receiver(r), amount(a){
-        sender->addTransaction(std::make_shared<Transaction>(*this));
-        receiver->addTransaction(std::make_shared<Transaction>(*this));
-
-    }
+    Transaction(Account* s, Account* r, int a): sender(s), receiver(r), amount(a){}
 
     //no setters because once a transaction is created you shouldn't be able to modify it
     int getAmount() const {

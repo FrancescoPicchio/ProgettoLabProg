@@ -9,7 +9,6 @@
 
 User::User(std::string n, std::string s, UserManager* m): name(n), surname(s), manager(m){
     id = generateNextId("user_id_tracker.csv");
-    manager->saveUser(this);
 }
 
 void User::printAccounts() const {
@@ -27,8 +26,10 @@ void User::makeTransaction(Account *sender, Account *receiver, int amount, Trans
     if(this->id == sender->getOwner()->getId()) {
         //You can't send money you don't have
         if(sender->getBalance() >= amount) {
-            auto *t = new Transaction(sender, receiver, amount);
+            auto t =  std::make_shared<Transaction>(sender, receiver, amount);
+            sender->addTransaction(t);
             sender->setBalance(sender->getBalance() - amount);
+            receiver->addTransaction(t);
             receiver->setBalance(receiver->getBalance() + amount);
             std::cout << "Transaction successful!" << std::endl;
             //TODO implement saving transaction to transactions.csv and updating balances on accounts.csv

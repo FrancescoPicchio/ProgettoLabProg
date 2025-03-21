@@ -30,10 +30,12 @@ private:
     AccountManager* manager;
 
 public:
+    //this constructor can be called unlike User's because AccountManager doesn't store shared_ptrs
     Account(std::string n, User* u, AccountManager* m);
+    //this method should only be called by AccountManager with loadAccounts, otherwise it'll mess up the id of the rest of the acounts, because then id won't necessarily be a primary key
     Account(int i, std::string n, User* u, int b, AccountManager* m);
 
-    std::string getName() {
+    std::string getName() const {
         return name;
     }
 
@@ -71,7 +73,7 @@ public:
         type = t;
     }*/
 
-    void addTransaction(const std::shared_ptr<Transaction>& t) {
+    void addTransaction(const std::shared_ptr<Transaction> t) {
         transactions.push_back(t);
     }
 };

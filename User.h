@@ -32,6 +32,8 @@ public:
 
         User(std::string n, std::string s, int i, UserManager* m): name(n), surname(s), id(i), manager(m) {};
 
+        //FIXME Should be a CreateUser method, otherwise it won't be able to pass itself as a unique_ptr when called in the Account Constructor
+        //FIXME CreateUser for the single responsibility principle should be done by an Account Factory instead of Users
         void addAccount(Account *a){
             accounts.insert(std::make_pair(a->getId(), std::unique_ptr<Account>(a)));
         };

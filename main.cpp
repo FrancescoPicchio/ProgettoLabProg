@@ -46,27 +46,24 @@ int main() {
     //small piece of code to test if loadUsers works
     auto *um = new UserManager("users.csv");
     um->loadUsers();
-    const std::map<int, std::shared_ptr<User>>& users = um->getUsers();
     // .at(key) throws an exception if key doesn't exist
-    std::string username1 = users.at(1)->getLegalName();
+    std::string username1 = um->getUser(1)->getLegalName();
     std::cout << username1 << std::endl;
-    std::string username2 = users.at(3)->getLegalName();
+    std::string username2 = um->getUser(3)->getLegalName();
     std::cout << username2 << std::endl;
 
-    std::shared_ptr<User> user = um->createUser("Sara", "Bianchi");
-    std::cout << user->getLegalName() << std::endl;
 
-    /*
+
     //small piece of code to test if loadAccounts works
     auto *am = new AccountManager("accounts.csv");
-    am->loadAccounts(um->getUsers());
     //testing print function for a user
-    users.at(1)->printAccounts();
+    um->getUser(1)->printAccounts();
     //testing print function for accounts
     const std::map<int, Account*>& accounts = am->getAccounts();
     accounts.at(1)->printInfo();
     accounts.at(2)->printInfo();
 
+    /*
     //small piece of code to test if loadTransactions works
     auto *tm = new TransactionManager("transactions.csv");
     tm->loadTransactions(accounts);
@@ -76,8 +73,9 @@ int main() {
      */
 
     delete um;
-    /*
+
     delete am;
+    /*
     delete tm;
      */
     return 0;
