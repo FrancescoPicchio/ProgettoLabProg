@@ -43,10 +43,28 @@ int main() {
     loadData("account_id_tracker.csv");
     spaceOutPrints();
 
-    //small piece of code to test if loadUsers works
+    //loads users from csv file and prepares a map to store all users
     auto *um = new UserManager("users.csv");
     std::map<int, std::unique_ptr<User>> users;
     um->loadUsers(users);
+
+    //loads accounts and makes a map of the accounts
+    auto *am = new AccountManager("accounts.csv");
+    std::map<int, Account*> accounts;
+    am->loadAccounts(users, accounts);
+
+    //loads the transactions and makes a vector of them
+    auto *tm = new TransactionManager("transactions.csv");
+    std::vector<Transaction*> transactions;
+    tm->loadTransactions(accounts, transactions);
+
+    /*
+    while(true){
+        std::cout << "Welcome, this program simulates a bank system. You can create a User, who can";
+    }*/
+
+    /*
+    //small piece of code to test if loadUsers works
     // .at(key) throws an exception if key doesn't exist
     std::string username1 = users.at(1)->getLegalName();
     std::cout << username1 << std::endl;
@@ -56,30 +74,21 @@ int main() {
 
 
     //small piece of code to test if loadAccounts works
-    auto *am = new AccountManager("accounts.csv");
     //testing print function for a user
     users.at(1)->printAccounts();
     //testing print function for accounts
-    std::map<int, Account*> accounts;
-    am->loadAccounts(users, accounts);
     accounts.at(1)->printInfo();
     accounts.at(2)->printInfo();
 
 
 
     //small piece of code to test if loadTransactions works
-    auto *tm = new TransactionManager("transactions.csv");
-    std::vector<Transaction*> transactions;
-    tm->loadTransactions(accounts, transactions);
     transactions.at(0)->printInfo();
     transactions.at(1)->printInfo();
 
-
+    */
     delete um;
-
-    /*
     delete am;
     delete tm;
-     */
     return 0;
 }

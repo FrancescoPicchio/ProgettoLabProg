@@ -32,13 +32,18 @@ public:
 
         User(std::string n, std::string s, int i, UserManager* m): name(n), surname(s), id(i), manager(m) {};
 
-        //FIXME Should be done inside a CreateAccount method, otherwise it won't be able to pass itself as a unique_ptr when called in the Account Constructor
         //FIXME CreateAccount for the single responsibility principle should be done by an Account Factory instead of Users
-        void addAccount(Account *a){
-            accounts.insert(std::make_pair(a->getId(), std::unique_ptr<Account>(a)));
+        void addAccount(std::unique_ptr<Account> a){
+            accounts[a->getId()] = std::move(a);
         };
 
-        Account* createAccount();
+
+        //This should be the only way to create an account, otherwise there'll be problems with double deletion. accounts_map can be omitted
+        Account* openAccount(std::string name, AccountManager* m, std::map<int, Account*>* accounts_map = nullptr);
+        //TODO you can make User a friend class of Account to make it so only it can access its constructor
+        //FIXME accounts_map is a bad name for a variable
+
+        Account* openAccount(int id, std::string name, int balance, AccountManager* m);
 
         void removeAccount(Account* a){
             accounts.erase(a->getId());

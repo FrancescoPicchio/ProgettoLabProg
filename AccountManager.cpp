@@ -18,14 +18,14 @@ bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& u
     int id_account, id_owner, balance;
     while(std::getline(file, line)) {
         std::stringstream ss(line);
-        //lines have to be formatted id_account, name, id_owner, balance. Important that id_account is first for faster lookups
+        //lines have to be formatted "id_account, name, id_owner, balance" without the quotes. Important that id_account is first for faster lookups
         if(std::getline(ss, id_account_str, ',') && std::getline(ss, name, ',') && std::getline(ss, id_owner_str, ',') && std::getline(ss, balance_str, ',')) {
             id_account = std::stoi(id_account_str);
             id_owner = std::stoi(id_owner_str);
             balance = std::stoi(balance_str);
             //.get() converts shared_ptr to normal ptr
             //FIXME this should create a unique ptr and then properly attatch itself to a user, which can't be done with the account constructor
-            auto *account = new Account(id_account, name, users.at(id_owner).get(), balance, this);
+            auto *account = users.at(id_owner)->openAccount(id_account, name, balance, this);
             accounts[id_account] = account;
         }else {
             std::cerr << "Error reading line: " << line << std::endl;

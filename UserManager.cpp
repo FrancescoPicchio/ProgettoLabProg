@@ -19,7 +19,7 @@ bool UserManager::loadUsers(std::map<int, std::unique_ptr<User>>& users) {
     int id;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
-        //lines have to be formatted id,name,surname. Important id first to make it easier to lookup ids faster
+        //lines have to be formatted "id,name,surname" without the quotes. Important id first to make it easier to lookup ids faster
         //the >> operator for stringstream automatically converts string into int
         if (std::getline(ss, id_str, ',') && std::getline(ss, name, ',') && std::getline(ss, surname, ',')) {
             //converts string into int

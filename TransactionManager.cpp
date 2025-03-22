@@ -17,7 +17,7 @@ bool TransactionManager::loadTransactions(const std::map<int, Account*>& account
     int id_sender, id_receiver, amount;
     while(std::getline(file, line)) {
         std::stringstream ss(line);
-        //lines have to be formatted id_sender, id_receiver, amount
+        //lines have to be formatted "id_sender, id_receiver, amount" without the quotes
         if(std::getline(ss, id_sender_str, ',') && std::getline(ss, id_receiver_str, ',') && std::getline(ss, amount_str, ',')) {
             id_sender = std::stoi(id_sender_str);
             id_receiver = std::stoi(id_receiver_str);
