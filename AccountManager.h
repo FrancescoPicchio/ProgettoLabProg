@@ -19,20 +19,21 @@ class AccountManager {
 private:
     std::string filename;
     //used a normal pointer because accounts should only be deleted if their user is deleted
-    std::map<int, Account*> accounts;
+    //std::map<int, Account*> accounts;
 
 public:
     AccountManager(const std::string fn): filename(fn){};
 
-    // Method to read accounts from a file and returns true if accounts loaded successfully
-    bool loadAccounts(const std::map<int, std::unique_ptr<User>>& users);
+    // Method to read accounts from a file and returns true if accounts loaded successfully and populates the map accounts
+    bool loadAccounts(const std::map<int, std::unique_ptr<User>>& users, std::map<int, Account*>& accounts);
 
     // Method to save a new account to the CSV file
     bool saveAccount(Account* acc);
 
+    /*
     const std::map<int, Account*>& getAccounts() const {
         return accounts;
-    }
+    }*/
 };
 
 

@@ -16,15 +16,19 @@
 class TransactionManager {
 private:
     std::string filename;
-    std::vector<Transaction *> transactions;
+    //std::vector<Transaction*> transactions;
 public:
     TransactionManager(const std::string fn): filename(fn){};
 
-    bool loadTransactions(const std::map<int, Account*>& accounts);
+    //populates the vector of transactions with the ones saved in transactions.csv
+    bool loadTransactions(const std::map<int, Account*>& accounts, std::vector<Transaction*>& transactions);
 
+    bool saveTransaction(Transaction* t);
+
+    /*
     const std::vector<Transaction*> getTransactions() const {
         return transactions;
-    }
+    }*/
 };
 
 

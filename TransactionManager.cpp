@@ -5,7 +5,7 @@
 #include "TransactionManager.h"
 #include "User.h"
 
-bool TransactionManager::loadTransactions(const std::map<int, Account*>& accounts) {
+bool TransactionManager::loadTransactions(const std::map<int, Account*>& accounts, std::vector<Transaction*>& transactions) {
     std::ifstream file(filename);
     if(!file.is_open()) {
         std::cerr << "Could not open the file " << filename << std::endl;
@@ -22,7 +22,7 @@ bool TransactionManager::loadTransactions(const std::map<int, Account*>& account
             id_sender = std::stoi(id_sender_str);
             id_receiver = std::stoi(id_receiver_str);
             amount = std::stoi(amount_str);
-            auto t =  std::make_shared<Transaction>(accounts.at(id_sender), accounts.at(id_receiver), amount);
+            auto t =  std::make_shared<Transaction>(accounts.at(id_sender), accounts.at(id_receiver), amount, this);
             accounts.at(id_sender)->addTransaction(t);
             accounts.at(id_receiver)->addTransaction(t);
             transactions.push_back(t.get());
@@ -32,6 +32,19 @@ bool TransactionManager::loadTransactions(const std::map<int, Account*>& account
         }
     }
 
+    file.close();
+    return true;
+}
+
+//TODO add the option to add transaction to transactions vector when this method is called
+bool TransactionManager::saveTransaction(Transaction* t){
+    std::ofstream file(filename, std::ios::app);
+    if(!file.is_open()){
+        std::cerr << "Error saving transaction " << " to transactions.csv" << std::endl;
+        return false;
+    }
+    std::string data = std::to_string(t->getSender()->getId()) + ',' + std::to_string(t->getReceiver()->getId()) + ',' + std::to_string(t->getAmount());
+    file << data << std::endl;
     file.close();
     return true;
 }

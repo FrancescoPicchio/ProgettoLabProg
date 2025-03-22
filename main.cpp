@@ -45,11 +45,12 @@ int main() {
 
     //small piece of code to test if loadUsers works
     auto *um = new UserManager("users.csv");
-    um->loadUsers();
+    std::map<int, std::unique_ptr<User>> users;
+    um->loadUsers(users);
     // .at(key) throws an exception if key doesn't exist
-    std::string username1 = um->getUser(1)->getLegalName();
+    std::string username1 = users.at(1)->getLegalName();
     std::cout << username1 << std::endl;
-    std::string username2 = um->getUser(3)->getLegalName();
+    std::string username2 = users.at(3)->getLegalName();
     std::cout << username2 << std::endl;
 
 
@@ -57,25 +58,27 @@ int main() {
     //small piece of code to test if loadAccounts works
     auto *am = new AccountManager("accounts.csv");
     //testing print function for a user
-    um->getUser(1)->printAccounts();
+    users.at(1)->printAccounts();
     //testing print function for accounts
-    const std::map<int, Account*>& accounts = am->getAccounts();
+    std::map<int, Account*> accounts;
+    am->loadAccounts(users, accounts);
     accounts.at(1)->printInfo();
     accounts.at(2)->printInfo();
 
-    /*
+
+
     //small piece of code to test if loadTransactions works
     auto *tm = new TransactionManager("transactions.csv");
-    tm->loadTransactions(accounts);
-    const std::vector<Transaction*> transactions = tm->getTransactions();
+    std::vector<Transaction*> transactions;
+    tm->loadTransactions(accounts, transactions);
     transactions.at(0)->printInfo();
     transactions.at(1)->printInfo();
-     */
+
 
     delete um;
 
-    delete am;
     /*
+    delete am;
     delete tm;
      */
     return 0;

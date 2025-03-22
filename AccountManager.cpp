@@ -5,7 +5,7 @@
 #include "AccountManager.h"
 
 //maybe take userManager as argument instead of map to be sure to have the correct map
-bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& users) {
+bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& users, std::map<int, Account*>& accounts) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Could not open the file " << filename << std::endl;
@@ -24,6 +24,7 @@ bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& u
             id_owner = std::stoi(id_owner_str);
             balance = std::stoi(balance_str);
             //.get() converts shared_ptr to normal ptr
+            //FIXME this should create a unique ptr and then properly attatch itself to a user, which can't be done with the account constructor
             auto *account = new Account(id_account, name, users.at(id_owner).get(), balance, this);
             accounts[id_account] = account;
         }else {
@@ -36,8 +37,8 @@ bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& u
     return true;
 }
 
+//TODO add the option to save the account to the map when this method is called
 bool AccountManager::saveAccount( Account* a) {
-    accounts.insert(std::make_pair(a->getId(), a));
     std::ofstream file(filename, std::ios::app);
     if(!file.is_open()){
         std::cerr << "Error saving account " << a->getName() << " to accounts.csv" << std::endl;

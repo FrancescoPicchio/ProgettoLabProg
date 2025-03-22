@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 
-bool UserManager::loadUsers() {
+bool UserManager::loadUsers(std::map<int, std::unique_ptr<User>>& users) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Could not open the file " << filename << std::endl;
@@ -38,7 +38,6 @@ bool UserManager::loadUsers() {
 }
 
 bool UserManager::saveUser(std::unique_ptr<User> u) {
-    users.insert(std::make_pair(u->getId(), std::move(u)));
     //std::ios::app lets you write to the file without having to truncate the rest
     std::ofstream file(filename, std::ios::app);
     if(!file.is_open()){
@@ -51,8 +50,9 @@ bool UserManager::saveUser(std::unique_ptr<User> u) {
     return true;
 }
 
+/*
 std::unique_ptr<User> UserManager::createUser(const std::string& name, const std::string& surname) {
     auto user = std::make_unique<User>(name, surname, this);
     users[user->getId()] = std::move(user);  // Store in map
     return user;
-}
+}*/

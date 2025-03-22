@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "TransactionManager.h"
 
 //Forward declaration of User and Transaction classes to avoid circular dependencies
 class User;
@@ -65,6 +66,8 @@ public:
 
     void printInfo() const;
 
+    void makeTransaction(Account *receiver, int amount, TransactionManager* tm);
+
     /*accountType getType() const {
         return type;
     }
@@ -76,6 +79,9 @@ public:
     void addTransaction(const std::shared_ptr<Transaction> t) {
         transactions.push_back(t);
     }
+
+    //Do not store this vector beyond the lifetime of the original shared_ptrs
+    std::vector<Transaction*> getTransactions() const;
 };
 
 
