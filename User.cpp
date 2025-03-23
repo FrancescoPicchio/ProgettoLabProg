@@ -13,11 +13,15 @@ User::User(std::string n, std::string s, UserManager* m): name(n), surname(s), m
 }
 
 void User::printAccounts() const {
+    if(accounts.empty()){
+        std::cout << "This user hasn't opened an account yet." << std::endl;
+        return;
+    }
     //prints account names and their associated balance
     std::cout << getLegalName() + "'s accounts are: " << std::endl;
     for(auto i = accounts.begin(); i != accounts.end(); ++i) {
         std::string s = std::to_string(i->second->getBalance());
-        std::cout << i->second->getName() + " with balance: " + s << std::endl;
+        std::cout << i->second->getName() + " with balance: " + s << ". Account's Id is" << i->second->getId() << std::endl;
     }
 };
 
