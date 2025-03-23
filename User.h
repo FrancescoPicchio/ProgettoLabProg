@@ -32,16 +32,13 @@ public:
 
         User(std::string n, std::string s, int i, UserManager* m): name(n), surname(s), id(i), manager(m) {};
 
-        //FIXME CreateAccount for the single responsibility principle should be done by an Account Factory instead of Users
         void addAccount(std::unique_ptr<Account> a){
             accounts[a->getId()] = std::move(a);
         };
 
-
         //This should be the only way to create an account, otherwise there'll be problems with double deletion. accounts_map can be omitted
         Account* openAccount(std::string name, AccountManager* m, std::map<int, Account*>* accounts_map = nullptr);
         //TODO you can make User a friend class of Account to make it so only it can access its constructor
-        //FIXME accounts_map is a bad name for a variable
 
         Account* openAccount(int id, std::string name, int balance, AccountManager* m);
 
@@ -67,10 +64,11 @@ public:
             return surname;
         }
 
-        //void makeTransaction(Account* sender, Account* receiver, int amount, TransactionManager* tm);
 
         //Do not store account beyond the lifetime of the original account unique_ptr
         Account* getAccount(int i) const;
+
+        int getTotalBalance() const;
 };
 
 

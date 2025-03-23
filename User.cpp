@@ -46,3 +46,11 @@ Account* User::openAccount(int id, std::string name, int balance, AccountManager
 Account* User::getAccount(int i) const {
     return accounts.at(i).get();
 }
+
+int User::getTotalBalance() const {
+    int total_balance = 0;
+    for(auto i = accounts.begin(); i != accounts.end(); i++){
+        total_balance += i->second->getBalance();
+    }
+    return total_balance;
+}

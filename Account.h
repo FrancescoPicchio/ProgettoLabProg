@@ -66,7 +66,7 @@ public:
 
     void printInfo() const;
 
-    void makeTransaction(Account *receiver, int amount, TransactionManager* tm);
+    bool makeTransaction(Account *receiver, int amount, TransactionManager* tm, std::vector<Transaction*>* transaction_instances = nullptr);
 
     /*accountType getType() const {
         return type;

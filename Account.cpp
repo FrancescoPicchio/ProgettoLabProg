@@ -30,7 +30,7 @@ std::vector<Transaction*> Account::getTransactions() const {
 };
 
 //Passing transactionManager so that I can notify it when the transaction is created
-void Account::makeTransaction(Account *receiver, int amount, TransactionManager* tm) {
+bool Account::makeTransaction(Account *receiver, int amount, TransactionManager* tm, std::vector<Transaction*>* transaction_instances) {
     //You can't send money you don't have
     if(this->getBalance() >= amount) {
         auto t =  std::make_shared<Transaction>(this, receiver, amount, tm);
@@ -41,9 +41,14 @@ void Account::makeTransaction(Account *receiver, int amount, TransactionManager*
         std::cout << "Transaction successful!" << std::endl;
         //Transaction is saved in makeTransaction instead of Transaction constructor
         tm->saveTransaction(t.get());
+        if(transaction_instances){
+            transaction_instances->push_back(t.get());
+        }
+        return true;
         //TODO implement updating balances on accounts.csv
     }
     else {
         std::cout << "Not enough money in your account." << std::endl;
+        return false;
     }
 }
