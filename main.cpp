@@ -71,7 +71,7 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
                     std::cin.ignore(1000, '\n');
                 }
                 //checks if the id inputted exists in the map
-                if (account_instances.contains(receiver_id)) {
+                if (account_instances.find(receiver_id) != account_instances.end()) {
                     key_exists = true;
                 } else {
                     std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id";
@@ -135,8 +135,8 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
                     std::cin.clear();
                     std::cin.ignore(1000, '\n');
                 }
-                //checks if the id inputted exists in the map
-                if(account_instances.contains(current_account_id)){
+                //checks if the id inputted exists in the map 
+                if(account_instances.find(current_account_id) != account_instances.end()){
                     if(user_instances.at(current_user_id)->getId() == account_instances.at(current_account_id)->getOwner()->getId()) {
                         key_exists = true;
                     }
@@ -172,7 +172,6 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
         }
         //prints out the current User's accounts and their total balance
         else if(input_choice == 3){
-            std::cout << user_instances.at(current_user_id)->getLegalName() << "'s accounts are:" << std::endl;
             user_instances.at(current_user_id)->printAccounts();
             std::cout << "And their total balance is:" << user_instances.at(current_user_id)->getTotalBalance() << std::endl;
             //gives user time to see their accounts and balance
@@ -240,7 +239,7 @@ int main() {
     while(true){
         std::cout << "Press 1 to access an existing User using its id, press 2 to create a new User, or press 0 to exit the program." << std::endl;
         while(!(std::cin >> input_choice)) {
-            std::cout << "Invalid input. Please input either 1 to access an existing User, 2 to create a new one or 0 to exit the program." << std::endl;
+            std::cout << "Invalid input. Please input either 1 to create a new User, 2 to access an existing User or 0 to exit the program." << std::endl;
             //clears the input of the error thrown and resets the input
             std::cin.clear();
             std::cin.ignore(1000, '\n');
@@ -289,7 +288,7 @@ int main() {
                     std::cin.ignore(1000, '\n');
                 }
                 //checks if the id inputted exists in the map
-                if(user_instances.contains(current_user_id)){
+                if(user_instances.find(current_user_id) != user_instances.end()){
                     key_exists = true;
                 }
                 else {
