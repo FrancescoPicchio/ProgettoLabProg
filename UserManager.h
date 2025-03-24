@@ -26,7 +26,7 @@ public:
     bool loadUsers(std::map<int, std::unique_ptr<User>>& users);
 
     //adds a new user to the csv file
-    bool saveUser(std::unique_ptr<User> u);
+    bool saveUser(User* u);
 
     /*
     User* getUser(int id) const {

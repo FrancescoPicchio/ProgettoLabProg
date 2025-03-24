@@ -26,6 +26,7 @@ private:
     //TODO implement account types
     //enum accountType type;
     User* owner;
+    //FIXME should be a double and not a int maybe
     int balance;
     std::vector <std::shared_ptr<Transaction>> transactions;
     AccountManager* manager;
@@ -82,6 +83,8 @@ public:
 
     //Do not store this vector beyond the lifetime of the original shared_ptrs
     std::vector<Transaction*> getTransactions() const;
+
+    void printTransactions() const;
 };
 
 

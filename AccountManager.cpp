@@ -13,8 +13,8 @@ bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& u
     }
 
     std::string line;
+    //getline() only works with strings
     std::string id_account_str, name, id_owner_str, balance_str;
-    //owner id and balance are gotten directly as int type because they're at the end of the line
     int id_account, id_owner, balance;
     while(std::getline(file, line)) {
         std::stringstream ss(line);
@@ -23,8 +23,6 @@ bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& u
             id_account = std::stoi(id_account_str);
             id_owner = std::stoi(id_owner_str);
             balance = std::stoi(balance_str);
-            //.get() converts shared_ptr to normal ptr
-            //FIXME this should create a unique ptr and then properly attatch itself to a user, which can't be done with the account constructor
             auto *account = users.at(id_owner)->openAccount(id_account, name, balance, this);
             accounts[id_account] = account;
         }else {
@@ -37,8 +35,7 @@ bool AccountManager::loadAccounts( const std::map<int, std::unique_ptr<User>>& u
     return true;
 }
 
-//TODO add the option to save the account to the map when this method is called
-bool AccountManager::saveAccount( Account* a) {
+bool AccountManager::saveAccount(Account* a) {
     std::ofstream file(filename, std::ios::app);
     if(!file.is_open()){
         std::cerr << "Error saving account " << a->getName() << " to accounts.csv" << std::endl;
@@ -48,4 +45,8 @@ bool AccountManager::saveAccount( Account* a) {
     file << data << std::endl;
     file.close();
     return true;
+}
+
+bool AccountManager::updateAccountBalance(Account* a) const {
+
 }

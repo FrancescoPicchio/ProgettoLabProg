@@ -8,5 +8,5 @@
 
 void Transaction::printInfo() const {
     //TODO handle what happens if one of the original accounts is deleted
-    std::cout << "sender: " << sender->getName() << ", receiver: " << receiver->getName() << ", amount: " << amount << std::endl;
+    std::cout << "Sender: " << sender->getName() << ", Receiver: " << receiver->getName() << ", Amount: " << amount << std::endl;
 }

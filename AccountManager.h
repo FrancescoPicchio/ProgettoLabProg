@@ -24,16 +24,14 @@ private:
 public:
     AccountManager(const std::string fn): filename(fn){};
 
-    // Method to read accounts from a file and returns true if accounts loaded successfully and populates the map accounts
+    //Method to read accounts from a file and returns true if accounts loaded successfully and populates the map accounts
     bool loadAccounts(const std::map<int, std::unique_ptr<User>>& users, std::map<int, Account*>& accounts);
 
-    // Method to save a new account to the CSV file
+    //Method to save a new account to the CSV file
     bool saveAccount(Account* acc);
 
-    /*
-    const std::map<int, Account*>& getAccounts() const {
-        return accounts;
-    }*/
+    //Method to update the account's balance if it changes
+    bool updateAccountBalance(Account* a) const;
 };
 
 

@@ -37,7 +37,7 @@ bool UserManager::loadUsers(std::map<int, std::unique_ptr<User>>& users) {
     return true;
 }
 
-bool UserManager::saveUser(std::unique_ptr<User> u) {
+bool UserManager::saveUser(User* u) {
     //std::ios::app lets you write to the file without having to truncate the rest
     std::ofstream file(filename, std::ios::app);
     if(!file.is_open()){

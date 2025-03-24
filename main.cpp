@@ -41,14 +41,18 @@ void spaceOutPrints() {
     }
 }
 
+
 //executes the logic for a specific account, which is pretty much making a transaction with another account.
 bool runAccountMenu(const Managers& managers, const int current_account_id, std::map<int, std::unique_ptr<User>>& user_instances, std::map<int, Account*>& account_instances, std::vector<Transaction*>& transaction_instances){
     int input_choice;
+    Account* current_account = account_instances.at(current_account_id);
     while(true){
-        std::cout << "You're accessing " << account_instances.at(current_account_id) << " and its current balance is: " << account_instances.at(current_account_id)->getBalance() << std::endl;
+        std::cout << "You're accessing " << current_account->getName() << " and its current balance is: " << account_instances.at(current_account_id)->getBalance() << std::endl;
         std::cout << "Press 1 to make a new transaction, sending money from this account to another" << std::endl;
-        std::cout << "Press 2 to print out the transactions regarding this account" << std::endl;
-        std::cout << "Press 3 to exit this account and return to the User submenu" << std::endl;
+        std::cout << "Press 2 to print out the transactions of this account" << std::endl;
+        std::cout << "Press 3 to print out the existing Accounts and their Owners" << std::endl;
+        std::cout << "Press 4 to exit this Account and return to the User submenu" << std::endl;
+        std::cout << "Press 0 to exit the program" << std::endl;
         if(!(std::cin >> input_choice)) {
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
             //clears the input of the error thrown and resets the input
@@ -57,6 +61,7 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
             //resets the loop if the input is wrong, so it can print out the possible choices
             continue;
         }
+        spaceOutPrints();
         if(input_choice == 1){
             spaceOutPrints();
             std::cout << "Who do you want to send the money to? Give the Id of the account that'll receive the money" << std::endl;
@@ -80,10 +85,10 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
                     std::cin.ignore(1000, '\n');
                 }
             }
-            bool amount_is_positive, enough_money_in_account = false;
-            int amount_for_transaction;/*
-            //TODO check if logic makes sense
-            while(!(amount_is_positive && enough_money_in_account)){
+            bool amount_is_correct = false;
+            int amount_for_transaction;
+            //Only exits the loop once it has assured that the amount of money is positive and there's enough money in the sender account
+            while(!(amount_is_correct)){
                 std::cout << "How much money do you want to send?" << std::endl;
                 while (!(std::cin >> amount_for_transaction)) {
                     std::cout << "Invalid input. Please input a positive integer." << std::endl;
@@ -91,8 +96,35 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
                     std::cin.clear();
                     std::cin.ignore(1000, '\n');
                 }
+                amount_is_correct = current_account->makeTransaction(account_instances.at(receiver_id), amount_for_transaction, managers.transactionManager, &transaction_instances);
             }
-            //account_instances.at(current_account_id)->makeTransaction(account_instances.at(receiver_id),);*/
+        }
+        else if(input_choice == 2) {
+            current_account->printTransactions();
+            system("pause");
+            spaceOutPrints();
+        }
+        else if(input_choice == 3) {
+            spaceOutPrints();
+            std::cout << "The currently existing Accounts are:" << std::endl;
+            for(auto i : account_instances){
+                i.second->printInfo();
+            }
+            system("pause");
+            spaceOutPrints();
+        }
+        else if(input_choice == 4) {
+            spaceOutPrints();
+            return true;
+        }
+        else if(input_choice == 0) {
+            return false;
+        }
+        else {
+            spaceOutPrints();
+            std::cout << "Please input a number associated with a choice." << std::endl;
+            system("pause");
+            spaceOutPrints();
         }
     }
 }
@@ -102,10 +134,10 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
     int input_choice;
     //keeps track of the last selected account
     int current_account_id;
+    User* current_user = user_instances.at(current_user_id).get();
     while(true) {
         //Operations that can be made with a given User
-        std::cout << "You have logged in as " << user_instances.at(current_user_id)->getLegalName() << ", you can:"
-                  << std::endl;
+        std::cout << std::endl << "You have logged in as " << current_user->getLegalName() << ", you can:" << std::endl;
         std::cout << "Press 1 access an Account you own." << std::endl;
         std::cout << "Press 2 to open a new Account for you." << std::endl;
         std::cout << "Press 3 to see the balance and Id for the Accounts you own." << std::endl;
@@ -117,15 +149,15 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             //resets the loop if the input is wrong, so it can print out the possible choices. Pauses to give the user time to read the error message, because this is an if and not a while
-            std::cout << "Press any button to continue." << std::endl;
             system("pause");
             spaceOutPrints();
             continue;
         }
+        spaceOutPrints();
         //Access account logic
         if(input_choice == 1){
             std::cout << "Please input the id of one of your Accounts to access it" << std::endl;
-            user_instances.at(current_user_id)->printAccounts();
+            current_user->printAccounts();
             bool key_exists = false;
             while(!key_exists){
                 //checks if input choice is actually an int and not something else
@@ -137,7 +169,7 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
                 }
                 //checks if the id inputted exists in the map 
                 if(account_instances.find(current_account_id) != account_instances.end()){
-                    if(user_instances.at(current_user_id)->getId() == account_instances.at(current_account_id)->getOwner()->getId()) {
+                    if(current_user->getId() == account_instances.at(current_account_id)->getOwner()->getId()) {
                         key_exists = true;
                     }
                     else{
@@ -154,8 +186,13 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
                     std::cin.ignore(1000, '\n');
                 }
             }
-            //TODO check if the Account exists and is owned by the User
-            //TODO runAccountMenu where you get to the submenu for the account
+            //The condition is true only if the program user chooses 0 in the Account submenu
+            if(!(runAccountMenu(managers, current_account_id, user_instances, account_instances, transaction_instances))){
+                return false;
+            }
+            else {
+                continue;
+            }
         }
         else if(input_choice == 2){
             std::cout << "Please input how you want your new Account to be called" << std::endl;
@@ -167,15 +204,20 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
             }
             Account* new_account = user_instances.at(current_user_id)->openAccount(new_account_name, managers.accountManager, &account_instances);
             current_account_id = new_account->getId();
-            std::cout << "New Account" << new_account->getName() << "created successfully." << std::endl;
-            //TODO either access runAccountMenu or continue to let the user select a new choice
+            std::cout << "New Account " << new_account->getName() << " was created successfully." << std::endl;
+            //accesses the Account submenu as the newly created user, condition is true only if the program user selects 0 from the Account submenu
+            if(!(runAccountMenu(managers, current_account_id, user_instances, account_instances, transaction_instances))){
+                return false;
+            }
+            else {
+                continue;
+            }
         }
         //prints out the current User's accounts and their total balance
         else if(input_choice == 3){
-            user_instances.at(current_user_id)->printAccounts();
-            std::cout << "And their total balance is:" << user_instances.at(current_user_id)->getTotalBalance() << std::endl;
+            current_user->printAccounts();
+            std::cout << "And their total balance is: " << current_user->getTotalBalance() << std::endl;
             //gives user time to see their accounts and balance
-            std::cout << "Press any button to return to the previous menu." << std::endl;
             system("pause");
             continue;
         }
@@ -194,7 +236,6 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             //pauses until another input to give time to the user to read the error message
-            std::cout << "Press any button to continue." << std::endl;
             system("pause");
             spaceOutPrints();
         }
@@ -211,6 +252,8 @@ int main() {
     loadData("account_id_tracker.csv");
     spaceOutPrints();
 
+    //could probably avoid making the managers pointers, and just pass them as references to avoid having to manually delete them
+
     //loads users from csv file and prepares a map to store all users
     auto *um = new UserManager("users.csv");
     std::map<int, std::unique_ptr<User>> user_instances;
@@ -218,10 +261,12 @@ int main() {
 
     //loads accounts and makes a map of the accounts
     auto *am = new AccountManager("accounts.csv");
+    //You could refactor the code to not need/use this vector, because you can just access accounts from the accounts field of a User
     std::map<int, Account*> account_instances;
     am->loadAccounts(user_instances, account_instances);
 
     //loads the transactions and makes a vector of them
+    //FIXME refactor to not include this vector, because it's quite useless. Given that we can already access all of the transactions from account_instances
     auto *tm = new TransactionManager("transactions.csv");
     std::vector<Transaction*> transaction_instances;
     tm->loadTransactions(account_instances, transaction_instances);
@@ -230,16 +275,15 @@ int main() {
 
     //initialized at a value different from all those present in the next while loop
     int input_choice;
-    //variables to keep track of the user or account that is being used at the moment
+    //variables to keep track of the user that is being used at the moment
     int current_user_id;
-    int current_account_id;
 
     std::cout << "Welcome, this program simulates a bank system. You can create a User, who can open an Account" << std::endl << "and make a transaction with that Account." << std::endl << std::endl;
 
     while(true){
-        std::cout << "Press 1 to access an existing User using its id, press 2 to create a new User, or press 0 to exit the program." << std::endl;
+        std::cout << "Press 1 to create a new User\nPress 2 to access an existing User using its id\nPress 3 to print out the existing users\nPress 0 to exit the program." << std::endl;
         while(!(std::cin >> input_choice)) {
-            std::cout << "Invalid input. Please input either 1 to create a new User, 2 to access an existing User or 0 to exit the program." << std::endl;
+            std::cout << "Invalid input. Please input a number among the ones the options." << std::endl;
             //clears the input of the error thrown and resets the input
             std::cin.clear();
             std::cin.ignore(1000, '\n');
@@ -287,7 +331,8 @@ int main() {
                     std::cin.clear();
                     std::cin.ignore(1000, '\n');
                 }
-                //checks if the id inputted exists in the map
+                //checks if the id inputted exists in the map.
+                //In C++ 20 can also use .contains method
                 if(user_instances.find(current_user_id) != user_instances.end()){
                     key_exists = true;
                 }
@@ -303,41 +348,26 @@ int main() {
                 break;
             }
         }
+        else if(input_choice == 3) {
+            spaceOutPrints();
+            std::cout << "The Users that currently exist are:" << std::endl;
+            for(auto i = user_instances.begin(); i != user_instances.end(); i++){
+                std::cout << i->second->getLegalName() << " and their Id is: " << i->second->getId() << std::endl;
+            }
+            system("pause");
+            spaceOutPrints();
+        }
         //ends the loop if input_choice is 0
         else if(input_choice == 0) {
             break;
         }
-        //if the input isn't either 1 or 2 it resets the loop
+        //if the input isn't either 1 or 2 it resets the loop.
         else {
-            std::cout << "Invalid input. Please input either 1 to access an existing User, 2 to create a new one or 0 to exit the program." << std::endl;
+            std::cout << "Invalid input. Please input a number among the ones the options." << std::endl;
+            system("pause");
+            spaceOutPrints();
         }
-
-
     }
-
-    /*
-    //small piece of code to test if loadUsers works
-    // .at(key) throws an exception if key doesn't exist
-    std::string username1 = user_instances.at(1)->getLegalName();
-    std::cout << username1 << std::endl;
-    std::string username2 = user_instances.at(3)->getLegalName();
-    std::cout << username2 << std::endl;
-
-
-
-    //small piece of code to test if loadAccounts works
-    //testing print function for a user
-    user_instances.at(1)->printAccounts();
-    //testing print function for accounts
-    account_instances.at(1)->printInfo();
-    account_instances.at(2)->printInfo();
-
-
-
-    //small piece of code to test if loadTransactions works
-    transaction_instances.at(0)->printInfo();
-    transaction_instances.at(1)->printInfo();*/
-
 
     delete um;
     delete am;
