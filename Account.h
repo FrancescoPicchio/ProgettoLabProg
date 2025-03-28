@@ -15,7 +15,6 @@
 class User;
 class AccountManager;
 class Transaction;
-enum accountType {checking_account, saving_account};
 /*TODO implement joint accounts, a children class of Account that has two owners, because User.accounts is made up of unique_ptrs
 maybe we can use a map of shared_ptrs as an extra field for a user.*/
 
@@ -24,7 +23,6 @@ private:
     int id;
     std::string name;
     //TODO implement account types
-    //enum accountType type;
     User* owner;
     //FIXME should be a double and not a int maybe
     int balance;
@@ -42,6 +40,7 @@ public:
     }
 
     void setBalance(int b){
+        //FIXME should call AccountManager to update accounts.csv to its new balance
         balance = b;
     }
 
@@ -50,10 +49,12 @@ public:
     }
 
     void addBalance(int b){
+        //FIXME should call AccountManager to update accounts.csv to its new balance
         balance += b;
     }
 
     void removeBalance(int b){
+        //FIXME should call AccountManager to update accounts.csv to its new balance
         balance -= b;
     }
 
@@ -68,14 +69,6 @@ public:
     void printInfo() const;
 
     bool makeTransaction(Account *receiver, int amount, TransactionManager* tm, std::vector<Transaction*>* transaction_instances = nullptr);
-
-    /*accountType getType() const {
-        return type;
-    }
-
-    void setType(accountType t){
-        type = t;
-    }*/
 
     void addTransaction(const std::shared_ptr<Transaction> t) {
         transactions.push_back(t);

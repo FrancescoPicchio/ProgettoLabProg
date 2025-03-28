@@ -49,10 +49,3 @@ bool UserManager::saveUser(User* u) {
     file.close();
     return true;
 }
-
-/*
-std::unique_ptr<User> UserManager::createUser(const std::string& name, const std::string& surname) {
-    auto user = std::make_unique<User>(name, surname, this);
-    users[user->getId()] = std::move(user);  // Store in map
-    return user;
-}*/

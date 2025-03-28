@@ -4,13 +4,13 @@
 
 #include "User.h"
 #include <memory>
-#include "IdManager.h"
+#include "IdUtil.h"
 #include "UserManager.h"
 #include "TransactionManager.h"
 
 User::User(std::string n, std::string s, UserManager* m): name(n), surname(s), manager(m){
     id = generateNextId("user_id_tracker.csv");
-    m->saveUser(this);
+    manager->saveUser(this);
 }
 
 void User::printAccounts() const {

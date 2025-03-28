@@ -5,13 +5,13 @@
 #include "UserManager.h"
 #include "AccountManager.h"
 #include "TransactionManager.h"
-
 //created to avoid passing three arguments to runUserSession()
 struct Managers {
     UserManager* userManager;
     AccountManager* accountManager;
     TransactionManager* transactionManager;
 };
+
 
 void loadData(const std::string& filename) {
     std::ifstream file(filename);  // Try to open the file
@@ -58,10 +58,14 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
             //clears the input of the error thrown and resets the input
             std::cin.clear();
             std::cin.ignore(1000, '\n');
+            system("pause");
+            spaceOutPrints();
             //resets the loop if the input is wrong, so it can print out the possible choices
             continue;
         }
         spaceOutPrints();
+        //FIXME refactor so this if is a function
+        //Makes a new transaction with another account
         if(input_choice == 1){
             spaceOutPrints();
             std::cout << "Who do you want to send the money to? Give the Id of the account that'll receive the money" << std::endl;
@@ -76,13 +80,19 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
                     std::cin.ignore(1000, '\n');
                 }
                 //checks if the id inputted exists in the map
-                if (account_instances.find(receiver_id) != account_instances.end()) {
-                    key_exists = true;
-                } else {
-                    std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id";
+                if (!(account_instances.find(receiver_id) != account_instances.end())) {
+                    std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id" << std::endl;
                     //clears the input of the error thrown and resets the input
                     std::cin.clear();
                     std::cin.ignore(1000, '\n');
+                } //Checks if the Account is trying to give itself money
+                else if(current_account->getId() == account_instances.at(receiver_id)->getId()) {
+                    std::cout << "You can't transfer money to the same Account!" << std::endl;
+                    //clears the input of the error thrown and resets the input
+                    std::cin.clear();
+                    std::cin.ignore(1000, '\n');
+                } else {
+                    key_exists = true;
                 }
             }
             bool amount_is_correct = false;
@@ -154,6 +164,7 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
             continue;
         }
         spaceOutPrints();
+        //FIXME refactor so this is all a function
         //Access account logic
         if(input_choice == 1){
             std::cout << "Please input the id of one of your Accounts to access it" << std::endl;

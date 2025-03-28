@@ -4,7 +4,7 @@
 
 #include "Account.h"
 #include "User.h"
-#include "IdManager.h"
+#include "IdUtil.h"
 #include "AccountManager.h"
 #include "Transaction.h"
 
@@ -38,8 +38,8 @@ bool Account::makeTransaction(Account *receiver, int amount, TransactionManager*
     //You can't send money you don't have
     else if(this->getBalance() >= amount) {
         auto t =  std::make_shared<Transaction>(this, receiver, amount, tm);
-        this->addTransaction(t);
-        this->setBalance(this->getBalance() - amount);
+        addTransaction(t);
+        setBalance(getBalance() - amount);
         receiver->addTransaction(t);
         receiver->setBalance(receiver->getBalance() + amount);
         std::cout << "Transaction successful!" << std::endl;

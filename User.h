@@ -30,7 +30,7 @@ public:
         //should only be called by the UserManager, otherwise it won't be added to the users map of UserManager
         User(std::string n, std::string s, UserManager* m);
 
-        User(std::string n, std::string s, int i, UserManager* m): name(n), surname(s), id(i), manager(m) {};
+        User(const std::string& n, const std::string& s, int i, UserManager* m): name(n), surname(s), id(i), manager(m) {};
 
         void addAccount(std::unique_ptr<Account> a){
             accounts[a->getId()] = std::move(a);
@@ -42,11 +42,7 @@ public:
 
         Account* openAccount(int id, std::string name, int balance, AccountManager* m);
 
-        void removeAccount(Account* a){
-            accounts.erase(a->getId());
-        };
-
-        void printAccounts () const;
+        void printAccounts() const;
 
         std::string getLegalName() const{
             return name + " " + surname;
@@ -63,7 +59,6 @@ public:
         std::string getSurname() const {
             return surname;
         }
-
 
         //Do not store account beyond the lifetime of the original account unique_ptr
         Account* getAccount(int i) const;

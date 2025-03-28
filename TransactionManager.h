@@ -24,11 +24,6 @@ public:
     bool loadTransactions(const std::map<int, Account*>& accounts, std::vector<Transaction*>& transactions);
 
     bool saveTransaction(Transaction* t);
-
-    /*
-    const std::vector<Transaction*> getTransactions() const {
-        return transactions;
-    }*/
 };
 
 

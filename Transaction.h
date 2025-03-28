@@ -19,6 +19,7 @@ private:
     Account* receiver;
     int amount;
     TransactionManager* manager;
+    //TODO
     //int fee = 0; //TODO implement fee, it should be different depending if the transaction is between accounts of the same user or not, and maybe other stuff
 
 public:
