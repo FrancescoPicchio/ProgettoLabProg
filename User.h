@@ -12,10 +12,10 @@
 #include <memory>
 #include "Account.h"
 #include "Transaction.h"
+#include "AppDataManager.h"
 
 //forward declaration to avoid circular dependencies
-class UserManager;
-class TransactionManager;
+class AppDataManager;
 
 class User {
 private:
@@ -24,25 +24,23 @@ private:
         int id;
         //changed map to map accounts to their ids instead of names, make sure it doesn't create problems
         std::map<int, std::unique_ptr<Account>> accounts;
-        UserManager* manager;
 
 public:
-        //should only be called by the UserManager, otherwise it won't be added to the users map of UserManager
-        User(std::string n, std::string s, UserManager* m);
-
-        User(const std::string& n, const std::string& s, int i, UserManager* m): name(n), surname(s), id(i), manager(m) {};
+    //TODO check if removing the definition of the constructor without i changes anything
+        User(const std::string& n, const std::string& s, int i): name(n), surname(s), id(i) {};
 
         void addAccount(std::unique_ptr<Account> a){
             accounts[a->getId()] = std::move(a);
         };
 
         //This should be the only way to create an account, otherwise there'll be problems with double deletion. accounts_map can be omitted
-        Account* openAccount(std::string name, AccountManager* m, std::map<int, Account*>* accounts_map = nullptr);
+        Account* openAccount(std::string n, AppDataManager* adm);
         //TODO you can make User a friend class of Account to make it so only it can access its constructor
 
-        Account* openAccount(int id, std::string name, int balance, AccountManager* m);
+        Account* openAccount(int i, std::string n, int balance);
 
-        void printAccounts() const;
+        //returns true if the User has at least one account, returns false if it doesn't have any accoutns
+        bool printAccounts() const;
 
         std::string getLegalName() const{
             return name + " " + surname;

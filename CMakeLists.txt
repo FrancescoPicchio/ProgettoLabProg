@@ -16,6 +16,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+#FIXME remove AccountManager TransactionManager and UserManager from git
 add_executable(progettoLabProg main.cpp
         User.cpp
         User.h
@@ -23,15 +24,11 @@ add_executable(progettoLabProg main.cpp
         Account.h
         Transaction.cpp
         Transaction.h
-        AccountManager.cpp
-        AccountManager.h
-        UserManager.cpp
-        UserManager.h
-        TransactionManager.cpp
-        TransactionManager.h
         IdUtil.h
         IdUtil.cpp
-        tests/runAllTests.cpp)
+        tests/runAllTests.cpp
+        AppDataManager.cpp
+        AppDataManager.h)
 
 # Link GoogleTest to the test executable
 target_link_libraries(progettoLabProg gtest gtest_main gmock gmock_main)

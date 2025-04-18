@@ -8,15 +8,11 @@
 #include "UserManager.h"
 #include "TransactionManager.h"
 
-User::User(std::string n, std::string s, UserManager* m): name(n), surname(s), manager(m){
-    id = generateNextId("user_id_tracker.csv");
-    manager->saveUser(this);
-}
 
-void User::printAccounts() const {
+bool User::printAccounts() const {
     if(accounts.empty()){
         std::cout << "This user hasn't opened an account yet." << std::endl;
-        return;
+        return false;
     }
     //prints account names and their associated balance
     std::cout << getLegalName() + "'s accounts are: " << std::endl;
@@ -24,21 +20,19 @@ void User::printAccounts() const {
         std::string s = std::to_string(i->second->getBalance());
         std::cout << i->second->getName() + " with balance: " + s << ". Account's Id is " << i->second->getId() << std::endl;
     }
+    return true;
 };
 
-Account* User::openAccount(std::string name, AccountManager* m, std::map<int, Account*>* accounts_map) {
-    std::unique_ptr<Account> new_account = std::make_unique<Account>(name, this, m);
+Account* User::openAccount(std::string n, AppDataManager* adm) {
+    std::unique_ptr<Account> new_account = std::make_unique<Account>(n, this, adm);
     //storing the raw pointer beause using std::move makes new_account a nullptr
     Account* raw_ptr = new_account.get();
     accounts[new_account->getId()] = std::move(new_account);
-    if(accounts_map != nullptr) {
-        (*accounts_map)[raw_ptr->getId()] = raw_ptr;
-    }
     return raw_ptr;
 }
 
-Account* User::openAccount(int id, std::string name, int balance, AccountManager* m) {
-    std::unique_ptr<Account> new_account = std::make_unique<Account>(id, name, this, balance, m);
+Account* User::openAccount(int i, std::string n, int balance) {
+    std::unique_ptr<Account> new_account = std::make_unique<Account>(i, n, this, balance);
     Account* raw_ptr = new_account.get();
     accounts[new_account->getId()] = std::move(new_account);
     return raw_ptr;

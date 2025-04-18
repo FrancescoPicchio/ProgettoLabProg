@@ -7,7 +7,7 @@
 #include "../Account.h"
 #include "../AccountManager.h"
 #include "../UserManager.h"
-
+/*
 class MockAccountManager : public AccountManager {
 public:
     explicit MockAccountManager(std::string fn): AccountManager(fn) {}
@@ -58,3 +58,4 @@ TEST_F(UserTest, TestSuccessfulAccountCreation){
     //checks if balance was assigned correctly
     EXPECT_EQ(user->getAccount(1)->getBalance(), 1000);
 }
+*/

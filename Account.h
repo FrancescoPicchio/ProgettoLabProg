@@ -9,11 +9,10 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "TransactionManager.h"
 
 //Forward declaration of User and Transaction classes to avoid circular dependencies
 class User;
-class AccountManager;
+class AppDataManager;
 class Transaction;
 /*TODO implement joint accounts, a children class of Account that has two owners, because User.accounts is made up of unique_ptrs
 maybe we can use a map of shared_ptrs as an extra field for a user.*/
@@ -23,17 +22,16 @@ private:
     int id;
     std::string name;
     //TODO implement account types
+    //TODO implement associated banks for accounts, if two accounts make a transaction with different associated banks there's a fee
     User* owner;
     //FIXME should be a double and not a int maybe
     int balance;
     std::vector <std::shared_ptr<Transaction>> transactions;
-    AccountManager* manager;
 
 public:
-    //this constructor can be called unlike User's because AccountManager doesn't store shared_ptrs
-    Account(std::string n, User* u, AccountManager* m);
-    //this method should only be called by AccountManager with loadAccounts, otherwise it'll mess up the id of the rest of the acounts, because then id won't necessarily be a primary key
-    Account(int i, std::string n, User* u, int b, AccountManager* m);
+    Account(std::string n, User* u, AppDataManager* adm);
+    //this method should only be called by AppDataManager with loadAccounts, otherwise it'll mess up the id of the rest of the acounts, because then id won't necessarily be a primary key
+    Account(int i, std::string n, User* u, int b);
 
     std::string getName() const {
         return name;
@@ -68,7 +66,7 @@ public:
 
     void printInfo() const;
 
-    bool makeTransaction(Account *receiver, int amount, TransactionManager* tm, std::vector<Transaction*>* transaction_instances = nullptr);
+    bool makeTransaction(Account *receiver, int amount, std::vector<Transaction*>* transaction_instances = nullptr);
 
     void addTransaction(const std::shared_ptr<Transaction> t) {
         transactions.push_back(t);

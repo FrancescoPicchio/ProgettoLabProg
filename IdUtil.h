@@ -7,7 +7,6 @@
 
 #include <string>
 
-//FIXME rename IdUtil
 // Function to get the next available ID
 int generateNextId(const std::string& filename);
 

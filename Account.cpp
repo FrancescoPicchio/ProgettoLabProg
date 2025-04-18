@@ -5,16 +5,15 @@
 #include "Account.h"
 #include "User.h"
 #include "IdUtil.h"
-#include "AccountManager.h"
 #include "Transaction.h"
+#include "AppDataManager.h"
 
-
-Account::Account(std::string n, User *u, AccountManager* m): name(n), owner(u), balance(0), manager(m){
+Account::Account(std::string n, User *u, AppDataManager* adm): name(n), owner(u), balance(0){
     id = generateNextId("account_id_tracker.csv");
-    m->saveAccount(this);
+    adm->addAccount(this);
 }
 
-Account::Account(int i, std::string n, User *u, int b, AccountManager* m): id(i), name(n), owner(u), balance(b), manager(m){}
+Account::Account(int i, std::string n, User *u, int b): id(i), name(n), owner(u), balance(b){}
 
 void Account::printInfo() const {
     std::cout << "id: " << id << ", name: " << name << ", owner: " << owner->getLegalName() << ", balance: " << balance << std::endl;
@@ -29,7 +28,7 @@ std::vector<Transaction*> Account::getTransactions() const {
 };
 
 //Passing transactionManager so that I can notify it when the transaction is created
-bool Account::makeTransaction(Account *receiver, int amount, TransactionManager* tm, std::vector<Transaction*>* transaction_instances) {
+bool Account::makeTransaction(Account *receiver, int amount, std::vector<Transaction*>* transaction_instances) {
     //You can't send a negative amount of money
     if(amount <= 0){
         std::cout << "You've inputted a negative amount, please input a positive whole number" << std::endl;
@@ -37,15 +36,14 @@ bool Account::makeTransaction(Account *receiver, int amount, TransactionManager*
     }
     //You can't send money you don't have
     else if(this->getBalance() >= amount) {
-        auto t =  std::make_shared<Transaction>(this, receiver, amount, tm);
+        auto t =  std::make_shared<Transaction>(this, receiver, amount);
         addTransaction(t);
         setBalance(getBalance() - amount);
         receiver->addTransaction(t);
         receiver->setBalance(receiver->getBalance() + amount);
         std::cout << "Transaction successful!" << std::endl;
         //Transaction is saved in makeTransaction instead of Transaction constructor
-        //FIXME transactions are saved to csv file even if account balance isn't changed to csv file
-        tm->saveTransaction(t.get());
+        //FIXME should call save to csv
         if(transaction_instances){
             transaction_instances->push_back(t.get());
         }

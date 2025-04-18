@@ -1,18 +1,9 @@
 #include <iostream>
 #include <fstream>
-#include <memory>
 #include "User.h"
-#include "UserManager.h"
-#include "AccountManager.h"
-#include "TransactionManager.h"
-//created to avoid passing three arguments to runUserSession()
-struct Managers {
-    UserManager* userManager;
-    AccountManager* accountManager;
-    TransactionManager* transactionManager;
-};
+#include "AppDataManager.h"
 
-
+//TODO Maybe add this inside the LoadData function of AppDataManager
 void loadData(const std::string& filename) {
     std::ifstream file(filename);  // Try to open the file
     if (!file) {  // If file doesn't exist
@@ -43,11 +34,11 @@ void spaceOutPrints() {
 
 
 //executes the logic for a specific account, which is pretty much making a transaction with another account.
-bool runAccountMenu(const Managers& managers, const int current_account_id, std::map<int, std::unique_ptr<User>>& user_instances, std::map<int, Account*>& account_instances, std::vector<Transaction*>& transaction_instances){
+bool runAccountMenu(AppDataManager* adm, const int current_account_id){
     int input_choice;
-    Account* current_account = account_instances.at(current_account_id);
+    Account* current_account = adm->getAccounts().at(current_account_id);
     while(true){
-        std::cout << "You're accessing " << current_account->getName() << " and its current balance is: " << account_instances.at(current_account_id)->getBalance() << std::endl;
+        std::cout << "You're accessing " << current_account->getName() << " and its current balance is: " << adm->getAccounts().at(current_account_id)->getBalance() << std::endl;
         std::cout << "Press 1 to make a new transaction, sending money from this account to another" << std::endl;
         std::cout << "Press 2 to print out the transactions of this account" << std::endl;
         std::cout << "Press 3 to print out the existing Accounts and their Owners" << std::endl;
@@ -80,13 +71,13 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
                     std::cin.ignore(1000, '\n');
                 }
                 //checks if the id inputted exists in the map
-                if (!(account_instances.find(receiver_id) != account_instances.end())) {
+                if (!(adm->getAccounts().find(receiver_id) != adm->getAccounts().end())) {
                     std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id" << std::endl;
                     //clears the input of the error thrown and resets the input
                     std::cin.clear();
                     std::cin.ignore(1000, '\n');
                 } //Checks if the Account is trying to give itself money
-                else if(current_account->getId() == account_instances.at(receiver_id)->getId()) {
+                else if(current_account->getId() == adm->getAccounts().at(receiver_id)->getId()) {
                     std::cout << "You can't transfer money to the same Account!" << std::endl;
                     //clears the input of the error thrown and resets the input
                     std::cin.clear();
@@ -106,7 +97,7 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
                     std::cin.clear();
                     std::cin.ignore(1000, '\n');
                 }
-                amount_is_correct = current_account->makeTransaction(account_instances.at(receiver_id), amount_for_transaction, managers.transactionManager, &transaction_instances);
+                amount_is_correct = current_account->makeTransaction(adm->getAccounts().at(receiver_id), amount_for_transaction);
             }
         }
         else if(input_choice == 2) {
@@ -117,7 +108,7 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
         else if(input_choice == 3) {
             spaceOutPrints();
             std::cout << "The currently existing Accounts are:" << std::endl;
-            for(auto i : account_instances){
+            for(auto i : adm->getAccounts()){
                 i.second->printInfo();
             }
             system("pause");
@@ -140,11 +131,11 @@ bool runAccountMenu(const Managers& managers, const int current_account_id, std:
 }
 
 //executes the logic once a program user has logged in. Returns false only if the user wants to exit the program. Managers and current_user_id are const because they shouldn't be modified
-bool runUserMenu(const Managers& managers, const int current_user_id, std::map<int, std::unique_ptr<User>>& user_instances, std::map<int, Account*>& account_instances, std::vector<Transaction*>& transaction_instances){
+bool runUserMenu(AppDataManager* adm, const int current_user_id){
     int input_choice;
     //keeps track of the last selected account
     int current_account_id;
-    User* current_user = user_instances.at(current_user_id).get();
+    User* current_user = adm->getUsers().at(current_user_id).get();
     while(true) {
         //Operations that can be made with a given User
         std::cout << std::endl << "You have logged in as " << current_user->getLegalName() << ", you can:" << std::endl;
@@ -167,8 +158,12 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
         //FIXME refactor so this is all a function
         //Access account logic
         if(input_choice == 1){
-            std::cout << "Please input the id of one of your Accounts to access it" << std::endl;
-            current_user->printAccounts();
+            if(!adm->getUsers().at(current_user_id)->printAccounts()) {
+                system("pause");
+                spaceOutPrints();
+                continue;
+            }
+            std::cout << "Please input the id of one of your Accounts to access it." << std::endl;
             bool key_exists = false;
             while(!key_exists){
                 //checks if input choice is actually an int and not something else
@@ -179,8 +174,8 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
                     std::cin.ignore(1000, '\n');
                 }
                 //checks if the id inputted exists in the map 
-                if(account_instances.find(current_account_id) != account_instances.end()){
-                    if(current_user->getId() == account_instances.at(current_account_id)->getOwner()->getId()) {
+                if(adm->getAccounts().find(current_account_id) != adm->getAccounts().end()){
+                    if(current_user->getId() == adm->getAccounts().at(current_account_id)->getOwner()->getId()) {
                         key_exists = true;
                     }
                     else{
@@ -198,7 +193,7 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
                 }
             }
             //The condition is true only if the program user chooses 0 in the Account submenu
-            if(!(runAccountMenu(managers, current_account_id, user_instances, account_instances, transaction_instances))){
+            if(!(runAccountMenu(adm, current_account_id))){
                 return false;
             }
             else {
@@ -213,11 +208,11 @@ bool runUserMenu(const Managers& managers, const int current_user_id, std::map<i
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-            Account* new_account = user_instances.at(current_user_id)->openAccount(new_account_name, managers.accountManager, &account_instances);
+            Account* new_account = adm->getUsers().at(current_user_id)->openAccount(new_account_name, adm);
             current_account_id = new_account->getId();
             std::cout << "New Account " << new_account->getName() << " was created successfully." << std::endl;
             //accesses the Account submenu as the newly created user, condition is true only if the program user selects 0 from the Account submenu
-            if(!(runAccountMenu(managers, current_account_id, user_instances, account_instances, transaction_instances))){
+            if(!(runAccountMenu(adm, current_account_id))){
                 return false;
             }
             else {
@@ -263,27 +258,11 @@ int main() {
     loadData("account_id_tracker.csv");
     spaceOutPrints();
 
-    //could probably avoid making the managers pointers, and just pass them as references to avoid having to manually delete them
-
-    //loads users from csv file and prepares a map to store all users
-    auto *um = new UserManager("users.csv");
-    std::map<int, std::unique_ptr<User>> user_instances;
-    um->loadUsers(user_instances);
-
-    //loads accounts and makes a map of the accounts
-    auto *am = new AccountManager("accounts.csv");
-    //You could refactor the code to not need/use this vector, because you can just access accounts from the accounts field of a User
-    std::map<int, Account*> account_instances;
-    am->loadAccounts(user_instances, account_instances);
-
-    //loads the transactions and makes a vector of them
-    //FIXME refactor to not include this vector, because it's quite useless. Given that we can already access all of the transactions from account_instances
-    auto *tm = new TransactionManager("transactions.csv");
-    std::vector<Transaction*> transaction_instances;
-    tm->loadTransactions(account_instances, transaction_instances);
-
-    Managers managers = {um, am, tm};
-
+    auto *adm = new AppDataManager();
+    if(!adm->loadAppData()) {
+        std::cout << "There was a problem loading the data" << std::endl;
+        return 0;
+    }
     //initialized at a value different from all those present in the next while loop
     int input_choice;
     //variables to keep track of the user that is being used at the moment
@@ -315,18 +294,16 @@ int main() {
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-            //creates new user and adds it to the map of the current instances of users
-            auto new_user = std::make_unique<User>(name_input, surname_input, um);
+            auto new_user = adm->createUser(name_input, surname_input);
             current_user_id = new_user->getId();
-            user_instances[new_user->getId()] = std::move(new_user);
-            std::cout << "Congrats, you have created the user " << user_instances[current_user_id]->getLegalName() << "!" << std::endl;
+            std::cout << "Congrats, you have created the user " << new_user->getLegalName() << "!" << std::endl;
             std::cout << "The new user's Id is " << current_user_id << ", remember it if you'll want to access this user again." << std::endl;
             std::cout << "Press any key to continue." << std::endl;
             //pauses the program and gives time to read the id of the new User object
             system("pause");
             spaceOutPrints();
             //condition is true only if the program user has exited the User menu with a 0
-            if(!(runUserMenu(managers, current_user_id, user_instances, account_instances, transaction_instances))){
+            if(!(runUserMenu(adm, current_user_id))){
                 break;
             }
         }
@@ -344,7 +321,7 @@ int main() {
                 }
                 //checks if the id inputted exists in the map.
                 //In C++ 20 can also use .contains method
-                if(user_instances.find(current_user_id) != user_instances.end()){
+                if(adm->getUsers().find(current_user_id) != adm->getUsers().end()){
                     key_exists = true;
                 }
                 else {
@@ -355,14 +332,14 @@ int main() {
                 }
             }
             //condition is true only if the program user has exited the User menu with a 0
-            if(!(runUserMenu(managers, current_user_id, user_instances, account_instances, transaction_instances))){
+            if(!(runUserMenu(adm, current_user_id))){
                 break;
             }
         }
         else if(input_choice == 3) {
             spaceOutPrints();
             std::cout << "The Users that currently exist are:" << std::endl;
-            for(auto i = user_instances.begin(); i != user_instances.end(); i++){
+            for(auto i = adm->getUsers().begin(); i != adm->getUsers().end(); i++){
                 std::cout << i->second->getLegalName() << " and their Id is: " << i->second->getId() << std::endl;
             }
             system("pause");
@@ -380,8 +357,6 @@ int main() {
         }
     }
 
-    delete um;
-    delete am;
-    delete tm;
+    delete adm;
     return 0;
 }
