@@ -37,6 +37,7 @@ void spaceOutPrints() {
 bool runAccountMenu(AppDataManager* adm, const int current_account_id){
     int input_choice;
     Account* current_account = adm->getAccounts().at(current_account_id);
+    //TODO add option to make a deposit to an account
     while(true){
         std::cout << "You're accessing " << current_account->getName() << " and its current balance is: " << adm->getAccounts().at(current_account_id)->getBalance() << std::endl;
         std::cout << "Press 1 to make a new transaction, sending money from this account to another" << std::endl;
@@ -298,7 +299,6 @@ int main() {
             current_user_id = new_user->getId();
             std::cout << "Congrats, you have created the user " << new_user->getLegalName() << "!" << std::endl;
             std::cout << "The new user's Id is " << current_user_id << ", remember it if you'll want to access this user again." << std::endl;
-            std::cout << "Press any key to continue." << std::endl;
             //pauses the program and gives time to read the id of the new User object
             system("pause");
             spaceOutPrints();

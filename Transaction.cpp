@@ -3,7 +3,6 @@
 //
 
 #include "Transaction.h"
-#include "TransactionManager.h"
 #include "Account.h"
 
 void Transaction::printInfo() const {

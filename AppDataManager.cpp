@@ -9,7 +9,15 @@
 
 //returns true only if it loads all the data from the different classes correctly
 bool AppDataManager::loadAppData() {
-    return (loadUsers() && loadAccounts() && loadTransactions());
+    bool usersLoaded = loadUsers();
+    bool accountsLoaded = loadAccounts();
+    bool transactionsLoaded = loadTransactions();
+
+    if (!usersLoaded) std::cerr << "[Error] Failed to load users\n";
+    if (!accountsLoaded) std::cerr << "[Error] Failed to load accounts\n";
+    if (!transactionsLoaded) std::cerr << "[Error] Failed to load transactions\n";
+
+    return usersLoaded && accountsLoaded && transactionsLoaded;
 }
 
 bool AppDataManager::loadUsers() {
@@ -18,7 +26,6 @@ bool AppDataManager::loadUsers() {
         std::cerr << "Could not open the file " << usersFile << std::endl;
         return false;
     }
-
     std::string line;
     std::string name, surname, id_str;
     int id;
@@ -37,7 +44,6 @@ bool AppDataManager::loadUsers() {
             continue; //skips lines with wrong formatting
         }
     }
-
     file.close();
     return true;
 }
@@ -48,7 +54,6 @@ bool AppDataManager::loadAccounts() {
         std::cerr << "Could not open the file " << accountsFile << std::endl;
         return false;
     }
-
     std::string line;
     //getline() only works with strings
     std::string id_account_str, name, id_owner_str, balance_str;
@@ -60,14 +65,15 @@ bool AppDataManager::loadAccounts() {
             id_account = std::stoi(id_account_str);
             id_owner = std::stoi(id_owner_str);
             balance = std::stoi(balance_str);
-            auto *account = users.at(id_owner)->openAccount(id_account, name, balance);
-            accounts[id_account] = account;
+            std::unique_ptr<Account> account = std::make_unique<Account>(id_account, name, users[id_owner].get(), balance);
+            //add account before using std::move otherwise you won't be able to access account
+            accounts[id_account] = account.get();
+            users[id_owner]->addAccount(std::move(account));
         }else {
             std::cerr << "Error reading line: " << line << std::endl;
             continue; //skip lines with wrong formatting
         }
     }
-
     file.close();
     return true;
 }
@@ -78,7 +84,6 @@ bool AppDataManager::loadTransactions() {
         std::cerr << "Could not open the file " << transactionsFile << std::endl;
         return false;
     }
-
     std::string line;
     std::string id_sender_str, id_receiver_str, amount_str;
     int id_sender, id_receiver, amount;
@@ -97,7 +102,6 @@ bool AppDataManager::loadTransactions() {
             continue; //skips lines with wrong formatting
         }
     }
-
     file.close();
     return true;
 }
@@ -114,7 +118,7 @@ User* AppDataManager::createUser(const std::string &n, const std::string &s) {
         return nullptr;
     }
     std::string data = std::to_string(new_user->getId()) + ',' + new_user->getName() + ',' + new_user->getSurname();
-    file << data;
+    file << data << '\n';
     file.close();
 
     users[new_user->getId()] = std::move(new_user);

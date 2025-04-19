@@ -7,6 +7,7 @@
 #include "IdUtil.h"
 #include "Transaction.h"
 #include "AppDataManager.h"
+#include <fstream>
 
 Account::Account(std::string n, User *u, AppDataManager* adm): name(n), owner(u), balance(0){
     id = generateNextId("account_id_tracker.csv");
@@ -28,7 +29,7 @@ std::vector<Transaction*> Account::getTransactions() const {
 };
 
 //Passing transactionManager so that I can notify it when the transaction is created
-bool Account::makeTransaction(Account *receiver, int amount, std::vector<Transaction*>* transaction_instances) {
+bool Account::makeTransaction(Account *receiver, int amount) {
     //You can't send a negative amount of money
     if(amount <= 0){
         std::cout << "You've inputted a negative amount, please input a positive whole number" << std::endl;
@@ -41,13 +42,9 @@ bool Account::makeTransaction(Account *receiver, int amount, std::vector<Transac
         setBalance(getBalance() - amount);
         receiver->addTransaction(t);
         receiver->setBalance(receiver->getBalance() + amount);
+        if(!saveTransactionToCSV(t.get()))
+            return false;
         std::cout << "Transaction successful!" << std::endl;
-        //Transaction is saved in makeTransaction instead of Transaction constructor
-        //FIXME should call save to csv
-        if(transaction_instances){
-            transaction_instances->push_back(t.get());
-        }
-        //TODO implement updating balances on accounts.csv
         return true;
         }
     else {
@@ -61,4 +58,16 @@ void Account::printTransactions() const {
     for(auto i : transactions){
         i->printInfo();
     }
+}
+
+bool Account::saveTransactionToCSV(Transaction *t) {
+    std::ofstream file("transactions.csv", std::ios::app);
+    if(!file.is_open()){
+        std::cerr << "Error saving transaction " << " to transactions.csv" << std::endl;
+        return false;
+    }
+    std::string data = std::to_string(t->getSender()->getId()) + ',' + std::to_string(t->getReceiver()->getId()) + ',' + std::to_string(t->getAmount());
+    file << data << '\n';
+    file.close();
+    return true;
 }

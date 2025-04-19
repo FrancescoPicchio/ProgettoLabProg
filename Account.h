@@ -28,6 +28,8 @@ private:
     int balance;
     std::vector <std::shared_ptr<Transaction>> transactions;
 
+    bool saveTransactionToCSV(Transaction* t);
+
 public:
     Account(std::string n, User* u, AppDataManager* adm);
     //this method should only be called by AppDataManager with loadAccounts, otherwise it'll mess up the id of the rest of the acounts, because then id won't necessarily be a primary key
@@ -66,7 +68,7 @@ public:
 
     void printInfo() const;
 
-    bool makeTransaction(Account *receiver, int amount, std::vector<Transaction*>* transaction_instances = nullptr);
+    bool makeTransaction(Account *receiver, int amount);
 
     void addTransaction(const std::shared_ptr<Transaction> t) {
         transactions.push_back(t);

@@ -4,9 +4,8 @@
 
 #include "User.h"
 #include <memory>
+#include <fstream>
 #include "IdUtil.h"
-#include "UserManager.h"
-#include "TransactionManager.h"
 
 
 bool User::printAccounts() const {
@@ -21,22 +20,18 @@ bool User::printAccounts() const {
         std::cout << i->second->getName() + " with balance: " + s << ". Account's Id is " << i->second->getId() << std::endl;
     }
     return true;
-};
+}
 
 Account* User::openAccount(std::string n, AppDataManager* adm) {
     std::unique_ptr<Account> new_account = std::make_unique<Account>(n, this, adm);
     //storing the raw pointer beause using std::move makes new_account a nullptr
-    Account* raw_ptr = new_account.get();
+    Account* account_raw_ptr = new_account.get();
+    if(!saveNewAccountToCSV(account_raw_ptr))
+        return nullptr;
     accounts[new_account->getId()] = std::move(new_account);
-    return raw_ptr;
+    return account_raw_ptr;
 }
 
-Account* User::openAccount(int i, std::string n, int balance) {
-    std::unique_ptr<Account> new_account = std::make_unique<Account>(i, n, this, balance);
-    Account* raw_ptr = new_account.get();
-    accounts[new_account->getId()] = std::move(new_account);
-    return raw_ptr;
-}
 
 Account* User::getAccount(int i) const {
     return accounts.at(i).get();
@@ -48,4 +43,16 @@ int User::getTotalBalance() const {
         total_balance += i->second->getBalance();
     }
     return total_balance;
+}
+
+bool User::saveNewAccountToCSV(Account *a) {
+    std::ofstream file("accounts.csv", std::ios::app);
+    if(!file.is_open()){
+        std::cerr << "Error saving account " << a->getName() << " to accounts.csv" << std::endl;
+        return false;
+    }
+    std::string data = std::to_string(a->getId()) + ',' + a->getName() + ',' + std::to_string(a->getOwner()->getId()) + ',' + std::to_string(a->getBalance());
+    file << data << '\n';
+    file.close();
+    return true;
 }

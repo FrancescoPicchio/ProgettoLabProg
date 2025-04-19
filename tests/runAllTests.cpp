@@ -1,12 +1,8 @@
-//
-// Created by fpicc on 24/03/2025.
-//
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "../User.h"
 #include "../Account.h"
-#include "../AccountManager.h"
-#include "../UserManager.h"
+
 /*
 class MockAccountManager : public AccountManager {
 public:
