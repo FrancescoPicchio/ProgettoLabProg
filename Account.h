@@ -28,7 +28,9 @@ private:
     int balance;
     std::vector <std::shared_ptr<Transaction>> transactions;
 
+    //not 100% sure that this makes sense
     bool saveTransactionToCSV(Transaction* t);
+    bool updateBalanceCsv() const;
 
 public:
     Account(std::string n, User* u, AppDataManager* adm);
