@@ -1,9 +1,13 @@
-A simple c++ project simulating transactions between accounts owned by various users.  
-It uses .csv files to store the data of the user, their accounts and the transactions.
+# C++ Bank Transactions Project
+A simple c++ project simulating Transactions between Accounts owned by various Users. Users own and can open Accounts. You can either make a deposit on an Account you own, or make a Transaction between two Accounts.
 
-### ATTENTION:  
-There will be csv files in the directory with the code, but they're different from the ones in the 
-that are used by the .exe (which is in the cmake-build-debug folder). The csv files in the directory
-with the code were made for debugging purposes, you can use them for your own data to test, 
-but if you run this in an ide like CLion you can just change the context and have it use the directory
-with the  code.
+It uses .csv files to store the data of Users, each with their own Accounts (alongside their own balance) and an history of the Transactions that took place.
+
+## ATTENTION:  
+Depending on how you run this program csv files will be created in different directories.
+
+If you just run the compiled program (so the .exe file in windows for example), it'll look for csv files in the same directory,
+and if there aren't it'll populate the folder with the needed .csv files.
+
+If you run it from an ide in debug mode the files will be created at a different location (in my case in the same plase as the .cpp and .h project files
+when using vscode).

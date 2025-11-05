@@ -73,25 +73,35 @@ void make_new_transaction(AppDataManager* adm, Account* current_account){
     }
 }
 
+void deposit_to_account(Account* current_account){
+    spaceOutPrints();
+    std::cout << "How much would you like to deposit?" << std::endl;
+    int deposit_amount = 0;
+    while(!(std::cin >> deposit_amount && deposit_amount > 0)) {
+        std::cout << "Invalid amount. Please input a positive integer." << std::endl;
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');
+    }
+    current_account->addBalance(deposit_amount);
+}
+
 //Executes the logic for a specific account, which entails mostly making a transaction with another account.
 bool runAccountMenu(AppDataManager* adm, Account* current_account){
     int input_choice;
-    //TODO add option to make a deposit to an account
     while(true){
-        std::cout << "You're accessing " << current_account->getName() << " and its current balance is: " << current_account->getBalance() << std::endl;
-        std::cout << "Press 1 to make a new transaction, sending money from this account to another" << std::endl;
-        std::cout << "Press 2 to print out the transactions of this account" << std::endl;
-        std::cout << "Press 3 to print out the existing Accounts and their Owners" << std::endl;
-        std::cout << "Press 4 to exit this Account and return to the User submenu" << std::endl;
+        std::cout << "You're accessing " << current_account->getName() << " and its current balance is: " << current_account->getBalance() << std::endl << std::endl;
+        std::cout << "Press 1 to make a new transaction, sending money from this Account to another" << std::endl;
+        std::cout << "Press 2 to make a deposit on this Account" << std::endl;
+        std::cout << "Press 3 to print out the transactions of this Account" << std::endl;
+        std::cout << "Press 4 to print out the existing Accounts and their Owners" << std::endl;
+        std::cout << "Press 5 to exit this Account and return to the User submenu" << std::endl;
         std::cout << "Press 0 to exit the program" << std::endl;
         if(!(std::cin >> input_choice)) {
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
- 
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             system("pause");
             spaceOutPrints();
-            //resets the loop if the input is wrong, so it can print out the possible choices
             continue;
         }
         spaceOutPrints();
@@ -100,12 +110,15 @@ bool runAccountMenu(AppDataManager* adm, Account* current_account){
         if(input_choice == 1){
             make_new_transaction(adm, current_account);
         }
-        else if(input_choice == 2) {
+        else if(input_choice == 2){
+            deposit_to_account(current_account);
+        }
+        else if(input_choice == 3) {
             current_account->printTransactions();
             system("pause");
             spaceOutPrints();
         }
-        else if(input_choice == 3) {
+        else if(input_choice == 4) {
             spaceOutPrints();
             std::cout << "The currently existing Accounts are:" << std::endl;
             for(auto i : adm->getAccounts()){
@@ -114,7 +127,7 @@ bool runAccountMenu(AppDataManager* adm, Account* current_account){
             system("pause");
             spaceOutPrints();
         }
-        else if(input_choice == 4) {
+        else if(input_choice == 5) {
             spaceOutPrints();
             return true;
         }
@@ -145,7 +158,6 @@ bool select_account(AppDataManager* adm, User* current_user){
             //checks if input choice is actually an int and not something else
             while(!(std::cin >> current_account_id)) {
                 std::cout << "Invalid input. Please input a positive integer." << std::endl;
-     
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
@@ -162,7 +174,6 @@ bool select_account(AppDataManager* adm, User* current_user){
             }
             else {
                 std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id";
-     
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
@@ -184,7 +195,7 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
     int current_account_id;
     while(true) {
         //Operations that can be made with a given User
-        std::cout << std::endl << "You have logged in as " << current_user->getLegalName() << ", you can:" << std::endl;
+        std::cout << std::endl << "You have logged in as " << current_user->getLegalName() << ", you can:" << std::endl << std::endl;
         std::cout << "Press 1 access an Account you own." << std::endl;
         std::cout << "Press 2 to open a new Account for you." << std::endl;
         std::cout << "Press 3 to see the balance and Id for the Accounts you own." << std::endl;
@@ -192,7 +203,6 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
         std::cout << "Press 0 to exit the program." << std::endl;
         if(!(std::cin >> input_choice)) {
             std::cout << "Invalid input, please input a number from the choices!" << std::endl << std::endl;
- 
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             //resets the loop if the input is wrong, so it can print out the possible choices. Pauses to give the user time to read the error message
@@ -212,6 +222,7 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
         }
         //Opens a new Account for the User
         else if(input_choice == 2){
+            //TODO refactor this into a separate function
             std::cout << "Please input your new Account's name" << std::endl;
             std::string new_account_name;
             while(!(std::cin >> new_account_name)){
@@ -250,7 +261,6 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
         //This is to cover the case where the input type is correct, but there is no choice associated with that number
         else {
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
- 
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             //pauses until another input to give time to the user to read the error message
@@ -290,6 +300,7 @@ int main() {
         }
         //Program user wants to create a new User object
         if(input_choice == 1) {
+            //TODO Refactor this in a separate function
             std::cout << "What is the name of the user?" << std::endl;
             std::string name_input;
             while(!(std::cin >> name_input)){
@@ -317,8 +328,9 @@ int main() {
                 break;
             }
         }
-        //Program user wants to access a
+        //Program user wants to access a User
         else if(input_choice == 2) {
+            //TODO refactor this in a separate function
             std::cout << "Please input the Id for the user you want to access as" << std::endl;
             bool key_exists = false;
             while(!key_exists){
