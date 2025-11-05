@@ -13,4 +13,4 @@ compile_commands.json
 /build
 
 # Ignores all the csv files
-* .csv
+*.csv

@@ -33,9 +33,44 @@ void spaceOutPrints() {
 }
 
 
-bool make_new_transaction(AppDataManager* adm, Account* current_account){
-    //TODO finish implementing that choice as a function
-    return true;
+void make_new_transaction(AppDataManager* adm, Account* current_account){
+    spaceOutPrints();
+    std::cout << "Who do you want to send the money to? Give the Id of the account that'll receive the money" << std::endl;
+    bool key_exists = false;
+    int receiver_id;
+    while(!key_exists) {
+        //checks if input choice is actually an int and not something else
+        while (!(std::cin >> receiver_id)) {
+            std::cout << "Invalid input. Please input a positive integer." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        }
+        //checks if the id inputted exists in the map
+        if (!(adm->getAccounts().find(receiver_id) != adm->getAccounts().end())) {
+            std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id" << std::endl;
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        } //Checks if the Account is trying to give itself money
+        else if(current_account->getId() == adm->getAccounts().at(receiver_id)->getId()) {
+            std::cout << "You can't transfer money to the same Account!" << std::endl;
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        } else {
+            key_exists = true;
+        }
+    }
+    bool amount_is_correct = false;
+    int amount_for_transaction;
+    //Only exits the loop once it has assured that the amount of money is positive and there's enough money in the sender account
+    while(!(amount_is_correct)){
+        std::cout << "How much money do you want to send?" << std::endl;
+        while (!(std::cin >> amount_for_transaction)) {
+            std::cout << "Invalid input. Please input a positive integer." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        }
+        amount_is_correct = current_account->makeTransaction(adm->getAccounts().at(receiver_id), amount_for_transaction);
+    }
 }
 
 //Executes the logic for a specific account, which entails mostly making a transaction with another account.
@@ -51,7 +86,7 @@ bool runAccountMenu(AppDataManager* adm, Account* current_account){
         std::cout << "Press 0 to exit the program" << std::endl;
         if(!(std::cin >> input_choice)) {
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
-            //clears the input of the error thrown and resets the input
+ 
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             system("pause");
@@ -63,7 +98,7 @@ bool runAccountMenu(AppDataManager* adm, Account* current_account){
         //FIXME refactor so this if is a function
         //Makes a new transaction with another account
         if(input_choice == 1){
-            
+            make_new_transaction(adm, current_account);
         }
         else if(input_choice == 2) {
             current_account->printTransactions();
@@ -104,12 +139,13 @@ bool select_account(AppDataManager* adm, User* current_user){
             return false;
         }
         std::cout << "Please input the id of one of your Accounts to access it." << std::endl;
+        spaceOutPrints();
         bool key_exists = false;
         while(!key_exists){
             //checks if input choice is actually an int and not something else
             while(!(std::cin >> current_account_id)) {
                 std::cout << "Invalid input. Please input a positive integer." << std::endl;
-                //clears the input of the error thrown and resets the input
+     
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
@@ -126,7 +162,7 @@ bool select_account(AppDataManager* adm, User* current_user){
             }
             else {
                 std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id";
-                //clears the input of the error thrown and resets the input
+     
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
@@ -156,7 +192,7 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
         std::cout << "Press 0 to exit the program." << std::endl;
         if(!(std::cin >> input_choice)) {
             std::cout << "Invalid input, please input a number from the choices!" << std::endl << std::endl;
-            //clears the input of the error thrown and resets the input
+ 
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             //resets the loop if the input is wrong, so it can print out the possible choices. Pauses to give the user time to read the error message
@@ -214,7 +250,7 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
         //This is to cover the case where the input type is correct, but there is no choice associated with that number
         else {
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
-            //clears the input of the error thrown and resets the input
+ 
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             //pauses until another input to give time to the user to read the error message
@@ -248,8 +284,7 @@ int main() {
     while(true){
         std::cout << "Press 1 to create a new User\nPress 2 to access an existing User using its id\nPress 3 to print out the existing users\nPress 0 to exit the program." << std::endl;
         while(!(std::cin >> input_choice)) {
-            std::cout << "Invalid input. Please input a number among the ones the options." << std::endl;
-            //clears the input of the error thrown and resets the input
+            std::cout << "Invalid input. Please input a number among the ones in the options." << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
@@ -294,7 +329,6 @@ int main() {
                     std::cin.ignore(1000, '\n');
                 }
                 //checks if the id inputted exists in the map.
-                //In C++ 20 can also use .contains method
                 if(adm->getUsers().find(current_user_id) != adm->getUsers().end()){
                     key_exists = true;
                 }
