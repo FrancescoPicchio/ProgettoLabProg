@@ -70,8 +70,8 @@ void make_new_transaction(AppDataManager* adm, Account* current_account){
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
-        //checks if the id inputted exists in the map
-        if (!(adm->get_accounts().find(receiver_id) != adm->get_accounts().end())) {
+        //contains only works in C++20
+        if (!(adm->get_accounts().contains(receiver_id))) {
             std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id" << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
@@ -117,12 +117,13 @@ bool run_account_menu(AppDataManager* adm, Account* current_account){
         //TODO Add option to close an Account
         //Operations that can be made with a given Account
         std::cout << "You're accessing " << current_account->get_name() << " and its current balance is: " << current_account->get_balance() << std::endl << std::endl;
-        std::cout << "Press 1 to make a new transaction, sending money from this Account to another" << std::endl;
-        std::cout << "Press 2 to make a deposit on this Account" << std::endl;
-        std::cout << "Press 3 to print out the transactions of this Account" << std::endl;
-        std::cout << "Press 4 to print out the existing Accounts and their Owners" << std::endl;
-        std::cout << "Press 5 to exit this Account and return to the User submenu" << std::endl;
-        std::cout << "Press 0 to exit the program" << std::endl;
+        std::cout << "Input the number corresponding to one of the following commands:" << std::endl;        
+        std::cout << "1. Make a New Transaction, sending money from this Account to another." << std::endl;
+        std::cout << "2. Make a Deposit to this Account." << std::endl;
+        std::cout << "3. Print out this Account's Transactions." << std::endl;
+        std::cout << "4. Print out the existing Accounts, with their Ids and Owners." << std::endl;
+        std::cout << "5. Exit this Account and return to User Submenu." << std::endl;
+        std::cout << "0. Exit the Program." << std::endl;
         if(!(std::cin >> input_choice)) {
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
             std::cin.clear();
@@ -187,8 +188,8 @@ bool select_account(AppDataManager* adm, User* current_user){
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-            //checks if the id inputted exists in the map 
-            if(adm->get_accounts().find(current_account_id) != adm->get_accounts().end()){
+            //contains only works in C++ 20 
+            if(adm->get_accounts().contains(current_account_id)){
                 if(current_user->get_id() == adm->get_accounts().at(current_account_id)->get_owner()->get_id()) {
                     key_exists = true;
                 }
@@ -223,11 +224,12 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
         //TODO Add option to delete your User profile
         //Operations that can be made with a given User
         std::cout << std::endl << "You have logged in as " << current_user->get_legal_name() << ", you can:" << std::endl << std::endl;
-        std::cout << "Press 1 access an Account you own." << std::endl;
-        std::cout << "Press 2 to open a new Account for you." << std::endl;
-        std::cout << "Press 3 to see the balance and Id for the Accounts you own." << std::endl;
-        std::cout << "Press 4 to log out of current User." << std::endl;
-        std::cout << "Press 0 to exit the program." << std::endl;
+        std::cout << "Input the number corresponding to one of the following commands:" << std::endl;        
+        std::cout << "1. Access an Account you own." << std::endl;
+        std::cout << "2. Open a New Account." << std::endl;
+        std::cout << "3. List your Accounts' Balance and Id." << std::endl;
+        std::cout << "4. Log out of the current User." << std::endl;
+        std::cout << "0. Exit the Program." << std::endl << std::endl;
         if(!(std::cin >> input_choice)) {
             std::cout << "Invalid input, please input a number from the choices!" << std::endl << std::endl;
             std::cin.clear();
@@ -311,17 +313,50 @@ int main() {
     //variables to keep track of the user that is being used at the moment
     int current_user_id;
 
-    std::cout << "Welcome. This program simulates a bank system." << std::endl << "You can create a User, who can open an Account" << std::endl << "and make a transaction with that Account." << std::endl << std::endl;
+    std::cout << "Welcome. This program simulates a bank system." << std::endl << "You can create a User, who can open an Account" << std::endl << "and make Transactions with your Accounts." << std::endl << std::endl;
 
     while(true){
-        std::cout << "Press 1 to create a new User\nPress 2 to access an existing User using its id\nPress 3 to print out the existing users\nPress 0 to exit the program." << std::endl;
+        std::cout << "Input the number corresponding to one of the following commands:" << std::endl;
+        std::cout << "1. Access a User using its Id" << std::endl;
+        std::cout << "2. Create a New User" << std::endl;
+        std::cout << "3. Print out the existing Users" << std::endl;
+        std::cout << "0. Exit the Program" << std::endl;
         while(!(std::cin >> input_choice)) {
             std::cout << "Invalid input. Please input a number among the ones in the options." << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
-        //Program user wants to create a new User object
+        space_out_prints();
+        //Program user wants to access a User
         if(input_choice == 1) {
+            //TODO refactor this in a separate function
+            std::cout << "Please input the Id for the user you want to access as" << std::endl;
+            bool key_exists = false;
+            while(!key_exists){
+                //checks if input choice is actually an int and not something else
+                while(!(std::cin >> current_user_id)) {
+                    std::cout << "Invalid input. Please input a positive integer." << std::endl;
+                     std::cin.clear();
+                    std::cin.ignore(1000, '\n');
+                }
+                //contains only works in C++ 20
+                if(adm->get_users().contains(current_user_id)){
+                    key_exists = true;
+                }
+                else {
+                    std::cout << "The Id that you have inputted belongs to no User. Please try a different Id" << std::endl;
+                     std::cin.clear();
+                    std::cin.ignore(1000, '\n');
+                }
+            }
+            User* current_user = adm->get_users().at(current_user_id).get();
+            //condition is true only if the program user has exited the User menu with a 0
+            if(!(run_user_menu(adm, current_user))){
+                break;
+            }
+        }
+        //Program user wants to create a new User object
+        else if(input_choice == 2) {
             //TODO Refactor this in a separate function
             std::cout << "What is the name of the user?" << std::endl;
             std::string name_input = get_sanitized_name_input();
@@ -334,34 +369,6 @@ int main() {
             //pauses the program and gives time to read the id of the new User object
             system("pause");
             space_out_prints();
-            //condition is true only if the program user has exited the User menu with a 0
-            User* current_user = adm->get_users().at(current_user_id).get();
-            if(!(run_user_menu(adm, current_user))){
-                break;
-            }
-        }
-        //Program user wants to access a User
-        else if(input_choice == 2) {
-            //TODO refactor this in a separate function
-            std::cout << "Please input the Id for the user you want to access as" << std::endl;
-            bool key_exists = false;
-            while(!key_exists){
-                //checks if input choice is actually an int and not something else
-                while(!(std::cin >> current_user_id)) {
-                    std::cout << "Invalid input. Please input a positive integer." << std::endl;
-                     std::cin.clear();
-                    std::cin.ignore(1000, '\n');
-                }
-                //checks if the id inputted exists in the map.
-                if(adm->get_users().find(current_user_id) != adm->get_users().end()){
-                    key_exists = true;
-                }
-                else {
-                    std::cout << "The Id that you have inputted belongs to no User. Please try a different Id" << std::endl;
-                     std::cin.clear();
-                    std::cin.ignore(1000, '\n');
-                }
-            }
             User* current_user = adm->get_users().at(current_user_id).get();
             //condition is true only if the program user has exited the User menu with a 0
             if(!(run_user_menu(adm, current_user))){
@@ -381,7 +388,6 @@ int main() {
         else if(input_choice == 0) {
             break;
         }
-        //if the input isn't either 1 or 2 it resets the loop.
         else {
             std::cout << "Invalid input. Please input a number among the ones in the options." << std::endl;
             system("pause");
