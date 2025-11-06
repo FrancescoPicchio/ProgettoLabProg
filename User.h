@@ -25,43 +25,44 @@ private:
         //changed map to map accounts to their ids instead of names, make sure it doesn't create problems
         std::map<int, std::unique_ptr<Account>> accounts;
 
-        bool saveNewAccountToCSV(Account* a);
+        bool save_new_account_to_CSV(Account* a);
 
 public:
     //TODO check if removing the definition of the constructor without i changes anything
         User(const std::string& n, const std::string& s, int i): name(n), surname(s), id(i) {};
 
-        void addAccount(std::unique_ptr<Account> a){
-            accounts[a->getId()] = std::move(a);
+        void add_account(std::unique_ptr<Account> a){
+            //TODO add functionality for a user to give one of their accounts to another user
+            accounts[a->get_id()] = std::move(a);
         };
 
         //This should be the only way to create an account, otherwise there'll be problems with double deletion. accounts_map can be omitted
-        Account* openAccount(std::string n, AppDataManager* adm);
+        Account* open_account(std::string n, AppDataManager* adm);
         //TODO you can make User a friend class of Account to make it so only it can access its constructor
 
         //returns true if the User has at least one account, returns false if it doesn't have any accoutns
-        bool printAccounts() const;
+        bool print_accounts() const;
 
-        std::string getLegalName() const{
+        std::string get_legal_name() const{
             return name + " " + surname;
         }
 
-        int getId() const {
+        int get_id() const {
             return id;
         }
 
-        std::string getName() const {
+        std::string get_name() const {
             return name;
         }
 
-        std::string getSurname() const {
+        std::string get_surname() const {
             return surname;
         }
 
         //Do not store account beyond the lifetime of the original account unique_ptr
-        Account* getAccount(int i) const;
+        Account* get_account(int i) const;
 
-        int getTotalBalance() const;
+        int get_total_balance() const;
 };
 
 

@@ -3,8 +3,8 @@
 #include "User.h"
 #include "AppDataManager.h"
 
-//TODO Maybe add this inside the LoadData function of AppDataManager
-void loadData(const std::string& filename) {
+//TODO Maybe add this inside the load_data function of AppDataManager
+void load_data(const std::string& filename) {
     std::ifstream file(filename);  // Try to open the file
     if (!file) {  // If file doesn't exist
         std::ofstream newFile(filename);  // Create the file
@@ -24,7 +24,7 @@ void loadData(const std::string& filename) {
     }
 }
 
-void spaceOutPrints() {
+void space_out_prints() {
     //Prints 5 newlines to help with legibility
     int i;
     for(i = 0; i < 5; i++) {
@@ -34,7 +34,7 @@ void spaceOutPrints() {
 
 
 void make_new_transaction(AppDataManager* adm, Account* current_account){
-    spaceOutPrints();
+    space_out_prints();
     std::cout << "Who do you want to send the money to? Give the Id of the account that'll receive the money" << std::endl;
     bool key_exists = false;
     int receiver_id;
@@ -46,12 +46,12 @@ void make_new_transaction(AppDataManager* adm, Account* current_account){
             std::cin.ignore(1000, '\n');
         }
         //checks if the id inputted exists in the map
-        if (!(adm->getAccounts().find(receiver_id) != adm->getAccounts().end())) {
+        if (!(adm->get_accounts().find(receiver_id) != adm->get_accounts().end())) {
             std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id" << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         } //Checks if the Account is trying to give itself money
-        else if(current_account->getId() == adm->getAccounts().at(receiver_id)->getId()) {
+        else if(current_account->get_id() == adm->get_accounts().at(receiver_id)->get_id()) {
             std::cout << "You can't transfer money to the same Account!" << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
@@ -69,12 +69,12 @@ void make_new_transaction(AppDataManager* adm, Account* current_account){
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
-        amount_is_correct = current_account->makeTransaction(adm->getAccounts().at(receiver_id), amount_for_transaction);
+        amount_is_correct = current_account->make_transaction(adm->get_accounts().at(receiver_id), amount_for_transaction);
     }
 }
 
 void deposit_to_account(Account* current_account){
-    spaceOutPrints();
+    space_out_prints();
     std::cout << "How much would you like to deposit?" << std::endl;
     int deposit_amount = 0;
     while(!(std::cin >> deposit_amount && deposit_amount > 0)) {
@@ -82,14 +82,14 @@ void deposit_to_account(Account* current_account){
         std::cin.clear();
         std::cin.ignore(1000, '\n');
     }
-    current_account->addBalance(deposit_amount);
+    current_account->add_balance(deposit_amount);
 }
 
 //Executes the logic for a specific account, which entails mostly making a transaction with another account.
-bool runAccountMenu(AppDataManager* adm, Account* current_account){
+bool run_account_menu(AppDataManager* adm, Account* current_account){
     int input_choice;
     while(true){
-        std::cout << "You're accessing " << current_account->getName() << " and its current balance is: " << current_account->getBalance() << std::endl << std::endl;
+        std::cout << "You're accessing " << current_account->get_name() << " and its current balance is: " << current_account->get_balance() << std::endl << std::endl;
         std::cout << "Press 1 to make a new transaction, sending money from this Account to another" << std::endl;
         std::cout << "Press 2 to make a deposit on this Account" << std::endl;
         std::cout << "Press 3 to print out the transactions of this Account" << std::endl;
@@ -101,10 +101,10 @@ bool runAccountMenu(AppDataManager* adm, Account* current_account){
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
             continue;
         }
-        spaceOutPrints();
+        space_out_prints();
         //FIXME refactor so this if is a function
         //Makes a new transaction with another account
         if(input_choice == 1){
@@ -114,31 +114,31 @@ bool runAccountMenu(AppDataManager* adm, Account* current_account){
             deposit_to_account(current_account);
         }
         else if(input_choice == 3) {
-            current_account->printTransactions();
+            current_account->print_transactionss();
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
         }
         else if(input_choice == 4) {
-            spaceOutPrints();
+            space_out_prints();
             std::cout << "The currently existing Accounts are:" << std::endl;
-            for(auto i : adm->getAccounts()){
-                i.second->printInfo();
+            for(auto i : adm->get_accounts()){
+                i.second->print_info();
             }
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
         }
         else if(input_choice == 5) {
-            spaceOutPrints();
+            space_out_prints();
             return true;
         }
         else if(input_choice == 0) {
             return false;
         }
         else {
-            spaceOutPrints();
+            space_out_prints();
             std::cout << "Please input a number associated with a choice." << std::endl;
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
         }
     }
 }
@@ -146,13 +146,13 @@ bool runAccountMenu(AppDataManager* adm, Account* current_account){
 //selects and access and Account for a User in the User menu
 bool select_account(AppDataManager* adm, User* current_user){
     int current_account_id;
-    if(!current_user->printAccounts()) {
+    if(!current_user->print_accounts()) {
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
             return false;
         }
         std::cout << "Please input the id of one of your Accounts to access it." << std::endl;
-        spaceOutPrints();
+        space_out_prints();
         bool key_exists = false;
         while(!key_exists){
             //checks if input choice is actually an int and not something else
@@ -162,8 +162,8 @@ bool select_account(AppDataManager* adm, User* current_user){
                 std::cin.ignore(1000, '\n');
             }
             //checks if the id inputted exists in the map 
-            if(adm->getAccounts().find(current_account_id) != adm->getAccounts().end()){
-                if(current_user->getId() == adm->getAccounts().at(current_account_id)->getOwner()->getId()) {
+            if(adm->get_accounts().find(current_account_id) != adm->get_accounts().end()){
+                if(current_user->get_id() == adm->get_accounts().at(current_account_id)->get_owner()->get_id()) {
                     key_exists = true;
                 }
                 else{
@@ -179,8 +179,8 @@ bool select_account(AppDataManager* adm, User* current_user){
             }
         }
         //The condition is true only if the program user chooses 0 in the Account submenu
-        Account* current_account = adm->getAccounts().at(current_account_id);
-        if(!(runAccountMenu(adm, current_account))){
+        Account* current_account = adm->get_accounts().at(current_account_id);
+        if(!(run_account_menu(adm, current_account))){
             return false;
         }
         else {
@@ -190,12 +190,12 @@ bool select_account(AppDataManager* adm, User* current_user){
 
 //Executes the logic once a program user has logged in, which consists of accessing an Account or opening a new one. 
 //Returns false only if the User wants to exit the program.
-bool runUserMenu(AppDataManager* adm, User* current_user){
+bool run_user_menu(AppDataManager* adm, User* current_user){
     int input_choice;
     int current_account_id;
     while(true) {
         //Operations that can be made with a given User
-        std::cout << std::endl << "You have logged in as " << current_user->getLegalName() << ", you can:" << std::endl << std::endl;
+        std::cout << std::endl << "You have logged in as " << current_user->get_legal_name() << ", you can:" << std::endl << std::endl;
         std::cout << "Press 1 access an Account you own." << std::endl;
         std::cout << "Press 2 to open a new Account for you." << std::endl;
         std::cout << "Press 3 to see the balance and Id for the Accounts you own." << std::endl;
@@ -207,10 +207,10 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
             std::cin.ignore(1000, '\n');
             //resets the loop if the input is wrong, so it can print out the possible choices. Pauses to give the user time to read the error message
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
             continue;
         }
-        spaceOutPrints();
+        space_out_prints();
         //Access account logic
         if(input_choice == 1){
             if(select_account(adm, current_user)){
@@ -230,12 +230,12 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-            Account* new_account = current_user->openAccount(new_account_name, adm);
-            current_account_id = new_account->getId();
-            std::cout << "New Account " << new_account->getName() << " was created successfully." << std::endl;
-            Account* current_account = adm->getAccounts().at(current_account_id);
+            Account* new_account = current_user->open_account(new_account_name, adm);
+            current_account_id = new_account->get_id();
+            std::cout << "New Account " << new_account->get_name() << " was created successfully." << std::endl;
+            Account* current_account = adm->get_accounts().at(current_account_id);
             //accesses the Account submenu as the newly created user, condition is true only if the program user selects 0 from the Account submenu
-            if(!(runAccountMenu(adm, current_account))){
+            if(!(run_account_menu(adm, current_account))){
                 return false;
             }
             else {
@@ -244,8 +244,8 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
         }
         //prints out the current User's Accounts and their total balance
         else if(input_choice == 3){
-            current_user->printAccounts();
-            std::cout << "And their total balance is: " << current_user->getTotalBalance() << std::endl;
+            current_user->print_accounts();
+            std::cout << "And their total balance is: " << current_user->get_total_balance() << std::endl;
             //gives user time to see their accounts and balance
             system("pause");
             continue;
@@ -265,19 +265,19 @@ bool runUserMenu(AppDataManager* adm, User* current_user){
             std::cin.ignore(1000, '\n');
             //pauses until another input to give time to the user to read the error message
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
         }
     }
 }
 
 
 int main() {
-    loadData("users.csv");
-    loadData("accounts.csv");
-    loadData("transactions.csv");
-    loadData("user_id_tracker.csv");
-    loadData("account_id_tracker.csv");
-    spaceOutPrints();
+    load_data("users.csv");
+    load_data("accounts.csv");
+    load_data("transactions.csv");
+    load_data("user_id_tracker.csv");
+    load_data("account_id_tracker.csv");
+    space_out_prints();
 
     auto *adm = new AppDataManager();
     if(!adm->loadAppData()) {
@@ -316,15 +316,15 @@ int main() {
                 std::cin.ignore(1000, '\n');
             }
             auto new_user = adm->createUser(name_input, surname_input);
-            current_user_id = new_user->getId();
-            std::cout << "Congratulation. You have created the user " << new_user->getLegalName() << "!" << std::endl;
+            current_user_id = new_user->get_id();
+            std::cout << "Congratulation. You have created the user " << new_user->get_legal_name() << "!" << std::endl;
             std::cout << "The new user's Id is " << current_user_id << ". Remember it if you'll want to access this user again." << std::endl;
             //pauses the program and gives time to read the id of the new User object
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
             //condition is true only if the program user has exited the User menu with a 0
             User* current_user = adm->getUsers().at(current_user_id).get();
-            if(!(runUserMenu(adm, current_user))){
+            if(!(run_user_menu(adm, current_user))){
                 break;
             }
         }
@@ -352,18 +352,18 @@ int main() {
             }
             User* current_user = adm->getUsers().at(current_user_id).get();
             //condition is true only if the program user has exited the User menu with a 0
-            if(!(runUserMenu(adm, current_user))){
+            if(!(run_user_menu(adm, current_user))){
                 break;
             }
         }
         else if(input_choice == 3) {
-            spaceOutPrints();
+            space_out_prints();
             std::cout << "The Users that currently exist are:" << std::endl;
             for(auto i = adm->getUsers().begin(); i != adm->getUsers().end(); i++){
-                std::cout << i->second->getLegalName() << " and their Id is: " << i->second->getId() << std::endl;
+                std::cout << i->second->get_legal_name() << " and their Id is: " << i->second->get_id() << std::endl;
             }
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
         }
         //ends the loop if input_choice is 0
         else if(input_choice == 0) {
@@ -373,7 +373,7 @@ int main() {
         else {
             std::cout << "Invalid input. Please input a number among the ones in the options." << std::endl;
             system("pause");
-            spaceOutPrints();
+            space_out_prints();
         }
     }
 

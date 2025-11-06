@@ -6,7 +6,7 @@
 
 //FIXME this implementation of managing ids doesn't work nicely if we have no id tracker file but have got an already initialized objects saved.
 //a way to fix this could be to add to the object manager classes a counter that keeps track of highest id found yet and at the end updates the id tracker to that value
-int generateNextId(const std::string& filename) {
+int generate_next_id(const std::string& filename) {
     std::ifstream file(filename);
     int lastId = 0;
     if (!(file >> lastId)) { //if reading fails default to 0

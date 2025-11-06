@@ -29,57 +29,57 @@ private:
     std::vector <std::shared_ptr<Transaction>> transactions;
 
     //not 100% sure that this makes sense
-    bool saveTransactionToCSV(Transaction* t);
-    bool updateBalanceCsv() const;
+    bool save_transaction_to_CSV(Transaction* t);
+    bool update_balance_CSV() const;
 
 public:
     Account(std::string n, User* u, AppDataManager* adm);
     //this method should only be called by AppDataManager with loadAccounts, otherwise it'll mess up the id of the rest of the acounts, because then id won't necessarily be a primary key
     Account(int i, std::string n, User* u, int b);
 
-    std::string getName() const {
+    std::string get_name() const {
         return name;
     }
 
-    void setBalance(int b){
+    void set_balance(int b){
         //FIXME should call AccountManager to update accounts.csv to its new balance
         balance = b;
     }
 
-    int getBalance() const {
+    int get_balance() const {
         return balance;
     }
 
-    void addBalance(int b){
+    void add_balance(int b){
         //FIXME should call AccountManager to update accounts.csv to its new balance
         balance += b;
     }
 
-    void removeBalance(int b){
+    void remove_balance(int b){
         //FIXME should call AccountManager to update accounts.csv to its new balance
         balance -= b;
     }
 
-    User* getOwner() const {
+    User* get_owner() const {
         return owner;
     };
 
-    int getId() const {
+    int get_id() const {
         return id;
     }
 
-    void printInfo() const;
+    void print_info() const;
 
-    bool makeTransaction(Account *receiver, int amount);
+    bool make_transaction(Account *receiver, int amount);
 
-    void addTransaction(const std::shared_ptr<Transaction> t) {
+    void add_transaction(const std::shared_ptr<Transaction> t) {
         transactions.push_back(t);
     }
 
     //Do not store this vector beyond the lifetime of the original shared_ptrs
-    std::vector<Transaction*> getTransactions() const;
+    std::vector<Transaction*> get_transactions() const;
 
-    void printTransactions() const;
+    void print_transactionss() const;
 };
 
 

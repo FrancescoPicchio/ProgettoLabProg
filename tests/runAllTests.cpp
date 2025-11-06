@@ -41,16 +41,16 @@ protected:
 TEST_F(UserTest, TestSuccessfulAccountCreation){
     //Expects to make 0 call to the saveAccount method
     EXPECT_CALL(*mock_am, saveAccount(testing::_)).Times(0);
-    bool result = user->openAccount(1, account_name, balance, mock_am);
+    bool result = user->open_account(1, account_name, balance, mock_am);
     //Check if account creation was successfull
     EXPECT_TRUE(result);
     //checks if Id was assigned correctly
-    EXPECT_EQ(user->getAccount(1)->getId(), 1);
+    EXPECT_EQ(user->get_account(1)->get_id(), 1);
     //checks if account_name was assigned correctly
-    EXPECT_EQ(user->getAccount(1)->getName(), account_name);
+    EXPECT_EQ(user->get_account(1)->get_name(), account_name);
     //checks if account's owner was assigned correctly, by comparing the Ids of the user and owner field
-    EXPECT_EQ(user->getAccount(1)->getOwner()->getId(), 1);
+    EXPECT_EQ(user->get_account(1)->get_owner()->get_id(), 1);
     //checks if balance was assigned correctly
-    EXPECT_EQ(user->getAccount(1)->getBalance(), 1000);
+    EXPECT_EQ(user->get_account(1)->get_balance(), 1000);
 }
 */

@@ -30,13 +30,13 @@ public:
     bool loadTransactions();
     //creates and saves to csv a new user
     User* createUser(const std::string& n, const std::string& s);
-    void addAccount(Account* a){
-        accounts[a->getId()] = a;
+    void add_account(Account* a){
+        accounts[a->get_id()] = a;
     }
     const std::map<int, std::unique_ptr<User>>& getUsers() const {
         return users;
     }
-    const std::map<int, Account*>& getAccounts() const {
+    const std::map<int, Account*>& get_accounts() const {
         return accounts;
     }
 };

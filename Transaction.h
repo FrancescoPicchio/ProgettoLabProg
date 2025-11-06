@@ -23,7 +23,7 @@ private:
     //int fee = 0; //TODO implement fee, it should be different depending on if the transaction is between accounts of the same user or not, and maybe other stuff
 
 public:
-    //Never call this directly, always use makeTransaction
+    //Never call this directly, always use make_transaction
     Transaction(Account* s, Account* r, int a): sender(s), receiver(r), amount(a){
         //initializes transaction with current time
         std::time_t now = std::time(nullptr);
@@ -33,25 +33,25 @@ public:
     }
 
     //no setters because once a transaction is created you shouldn't be able to modify it
-    int getAmount() const {
+    int get_amount() const {
         return amount;
     }
 
-    Account* getSender() const {
+    Account* get_sender() const {
         return sender;
     }
 
-    Account* getReceiver() const {
+    Account* get_receiver() const {
         return receiver;
     }
 
-    void printInfo() const;
+    void print_info() const;
 
-    void printDate() const {
+    void print_date() const {
         std::cout << "Date: " << date;
     }
 
-    std::string getDate() const {
+    std::string get_date() const {
         return date;
     }
 

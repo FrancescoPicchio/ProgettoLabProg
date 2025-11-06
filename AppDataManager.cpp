@@ -68,7 +68,7 @@ bool AppDataManager::loadAccounts() {
             std::unique_ptr<Account> account = std::make_unique<Account>(id_account, name, users[id_owner].get(), balance);
             //add account before using std::move otherwise you won't be able to access account
             accounts[id_account] = account.get();
-            users[id_owner]->addAccount(std::move(account));
+            users[id_owner]->add_account(std::move(account));
         }else {
             std::cerr << "Error reading line: " << line << std::endl;
             continue; //skip lines with wrong formatting
@@ -95,8 +95,8 @@ bool AppDataManager::loadTransactions() {
             id_receiver = std::stoi(id_receiver_str);
             amount = std::stoi(amount_str);
             auto t =  std::make_shared<Transaction>(accounts.at(id_sender), accounts.at(id_receiver), amount);
-            accounts.at(id_sender)->addTransaction(t);
-            accounts.at(id_receiver)->addTransaction(t);
+            accounts.at(id_sender)->add_transaction(t);
+            accounts.at(id_receiver)->add_transaction(t);
         }else {
             std::cerr << "Error reading line: " << line << std::endl;
             continue; //skips lines with wrong formatting
@@ -107,20 +107,20 @@ bool AppDataManager::loadTransactions() {
 }
 
 User* AppDataManager::createUser(const std::string &n, const std::string &s) {
-    int id = generateNextId("user_id_tracker.csv");
+    int id = generate_next_id("user_id_tracker.csv");
     auto new_user = std::make_unique<User>(n, s, id);
     User* raw_new_user_ptr = new_user.get();
 
     //saves the new user in the csv file
     std::ofstream file(usersFile, std::ios::app);
     if(!file.is_open()){
-        std::cerr << "Error saving user " << new_user->getLegalName() << "to users.csv file" << std::endl;
+        std::cerr << "Error saving user " << new_user->get_legal_name() << "to users.csv file" << std::endl;
         return nullptr;
     }
-    std::string data = std::to_string(new_user->getId()) + ',' + new_user->getName() + ',' + new_user->getSurname();
+    std::string data = std::to_string(new_user->get_id()) + ',' + new_user->get_name() + ',' + new_user->get_surname();
     file << data << '\n';
     file.close();
 
-    users[new_user->getId()] = std::move(new_user);
+    users[new_user->get_id()] = std::move(new_user);
     return raw_new_user_ptr;
 }

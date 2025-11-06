@@ -8,6 +8,6 @@
 #include <string>
 
 // Function to get the next available ID
-int generateNextId(const std::string& filename);
+int generate_next_id(const std::string& filename);
 
 #endif //PROGETTOLABPROG_IDUTIL_H
