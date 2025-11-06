@@ -24,16 +24,16 @@ private:
     std::string accountsFile = "accounts.csv";
     std::string transactionsFile = "transactions.csv";
 public:
-    bool loadAppData();
-    bool loadUsers();
-    bool loadAccounts();
-    bool loadTransactions();
+    bool load_app_data();
+    bool load_users();
+    bool load_accounts();
+    bool load_transactions();
     //creates and saves to csv a new user
-    User* createUser(const std::string& n, const std::string& s);
+    User* create_user(const std::string& n, const std::string& s);
     void add_account(Account* a){
         accounts[a->get_id()] = a;
     }
-    const std::map<int, std::unique_ptr<User>>& getUsers() const {
+    const std::map<int, std::unique_ptr<User>>& get_users() const {
         return users;
     }
     const std::map<int, Account*>& get_accounts() const {

@@ -8,10 +8,10 @@
 #include <sstream>
 
 //returns true only if it loads all the data from the different classes correctly
-bool AppDataManager::loadAppData() {
-    bool usersLoaded = loadUsers();
-    bool accountsLoaded = loadAccounts();
-    bool transactionsLoaded = loadTransactions();
+bool AppDataManager::load_app_data() {
+    bool usersLoaded = load_users();
+    bool accountsLoaded = load_accounts();
+    bool transactionsLoaded = load_transactions();
 
     if (!usersLoaded) std::cerr << "[Error] Failed to load users\n";
     if (!accountsLoaded) std::cerr << "[Error] Failed to load accounts\n";
@@ -20,7 +20,7 @@ bool AppDataManager::loadAppData() {
     return usersLoaded && accountsLoaded && transactionsLoaded;
 }
 
-bool AppDataManager::loadUsers() {
+bool AppDataManager::load_users() {
     std::ifstream file(usersFile);
     if (!file.is_open()) {
         std::cerr << "Could not open the file " << usersFile << std::endl;
@@ -48,7 +48,7 @@ bool AppDataManager::loadUsers() {
     return true;
 }
 
-bool AppDataManager::loadAccounts() {
+bool AppDataManager::load_accounts() {
     std::ifstream file(accountsFile);
     if (!file.is_open()) {
         std::cerr << "Could not open the file " << accountsFile << std::endl;
@@ -78,7 +78,7 @@ bool AppDataManager::loadAccounts() {
     return true;
 }
 
-bool AppDataManager::loadTransactions() {
+bool AppDataManager::load_transactions() {
     std::ifstream file(transactionsFile);
     if(!file.is_open()) {
         std::cerr << "Could not open the file " << transactionsFile << std::endl;
@@ -106,7 +106,7 @@ bool AppDataManager::loadTransactions() {
     return true;
 }
 
-User* AppDataManager::createUser(const std::string &n, const std::string &s) {
+User* AppDataManager::create_user(const std::string &n, const std::string &s) {
     int id = generate_next_id("user_id_tracker.csv");
     auto new_user = std::make_unique<User>(n, s, id);
     User* raw_new_user_ptr = new_user.get();

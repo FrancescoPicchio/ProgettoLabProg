@@ -34,7 +34,7 @@ private:
 
 public:
     Account(std::string n, User* u, AppDataManager* adm);
-    //this method should only be called by AppDataManager with loadAccounts, otherwise it'll mess up the id of the rest of the acounts, because then id won't necessarily be a primary key
+    //this method should only be called by AppDataManager with load_accounts, otherwise it'll mess up the id of the rest of the acounts, because then id won't necessarily be a primary key
     Account(int i, std::string n, User* u, int b);
 
     std::string get_name() const {

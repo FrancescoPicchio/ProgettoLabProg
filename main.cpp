@@ -280,7 +280,7 @@ int main() {
     space_out_prints();
 
     auto *adm = new AppDataManager();
-    if(!adm->loadAppData()) {
+    if(!adm->load_app_data()) {
         std::cout << "There was a problem loading the data" << std::endl;
         return 0;
     }
@@ -315,7 +315,7 @@ int main() {
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-            auto new_user = adm->createUser(name_input, surname_input);
+            auto new_user = adm->create_user(name_input, surname_input);
             current_user_id = new_user->get_id();
             std::cout << "Congratulation. You have created the user " << new_user->get_legal_name() << "!" << std::endl;
             std::cout << "The new user's Id is " << current_user_id << ". Remember it if you'll want to access this user again." << std::endl;
@@ -323,7 +323,7 @@ int main() {
             system("pause");
             space_out_prints();
             //condition is true only if the program user has exited the User menu with a 0
-            User* current_user = adm->getUsers().at(current_user_id).get();
+            User* current_user = adm->get_users().at(current_user_id).get();
             if(!(run_user_menu(adm, current_user))){
                 break;
             }
@@ -341,7 +341,7 @@ int main() {
                     std::cin.ignore(1000, '\n');
                 }
                 //checks if the id inputted exists in the map.
-                if(adm->getUsers().find(current_user_id) != adm->getUsers().end()){
+                if(adm->get_users().find(current_user_id) != adm->get_users().end()){
                     key_exists = true;
                 }
                 else {
@@ -350,7 +350,7 @@ int main() {
                     std::cin.ignore(1000, '\n');
                 }
             }
-            User* current_user = adm->getUsers().at(current_user_id).get();
+            User* current_user = adm->get_users().at(current_user_id).get();
             //condition is true only if the program user has exited the User menu with a 0
             if(!(run_user_menu(adm, current_user))){
                 break;
@@ -359,7 +359,7 @@ int main() {
         else if(input_choice == 3) {
             space_out_prints();
             std::cout << "The Users that currently exist are:" << std::endl;
-            for(auto i = adm->getUsers().begin(); i != adm->getUsers().end(); i++){
+            for(auto i = adm->get_users().begin(); i != adm->get_users().end(); i++){
                 std::cout << i->second->get_legal_name() << " and their Id is: " << i->second->get_id() << std::endl;
             }
             system("pause");
