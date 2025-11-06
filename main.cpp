@@ -32,6 +32,31 @@ void space_out_prints() {
     }
 }
 
+std::string get_sanitized_name_input(){
+    std::string new_name;
+    bool name_is_not_valid = true;
+    while(name_is_not_valid){
+        if(!(std::cin >> new_name)){
+            std::cout << "Invalid input." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        }
+        else{
+            //Removes commas to avoid issues with csv files. std::erase works only for C++20
+            std::erase(new_name, ',');
+            if(new_name.empty()){
+                std::cout << "Invalid input." << std::endl;
+                std::cin.clear();
+                std::cin.ignore(1000, '\n'); 
+            }
+            else{
+                name_is_not_valid = false;
+            }
+        }  
+    }
+    return new_name;
+}
+
 
 void make_new_transaction(AppDataManager* adm, Account* current_account){
     space_out_prints();
@@ -89,6 +114,8 @@ void deposit_to_account(Account* current_account, AppDataManager* adm){
 bool run_account_menu(AppDataManager* adm, Account* current_account){
     int input_choice;
     while(true){
+        //TODO Add option to close an Account
+        //Operations that can be made with a given Account
         std::cout << "You're accessing " << current_account->get_name() << " and its current balance is: " << current_account->get_balance() << std::endl << std::endl;
         std::cout << "Press 1 to make a new transaction, sending money from this Account to another" << std::endl;
         std::cout << "Press 2 to make a deposit on this Account" << std::endl;
@@ -193,6 +220,7 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
     int input_choice;
     int current_account_id;
     while(true) {
+        //TODO Add option to delete your User profile
         //Operations that can be made with a given User
         std::cout << std::endl << "You have logged in as " << current_user->get_legal_name() << ", you can:" << std::endl << std::endl;
         std::cout << "Press 1 access an Account you own." << std::endl;
@@ -223,12 +251,7 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
         else if(input_choice == 2){
             //TODO refactor this into a separate function
             std::cout << "Please input your new Account's name" << std::endl;
-            std::string new_account_name;
-            while(!(std::cin >> new_account_name)){
-                std::cout << "Invalid input.";
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
-            }
+            std::string new_account_name = get_sanitized_name_input();
             Account* new_account = current_user->open_account(new_account_name, adm);
             current_account_id = new_account->get_id();
             std::cout << "New Account " << new_account->get_name() << " was created successfully." << std::endl;
@@ -301,19 +324,9 @@ int main() {
         if(input_choice == 1) {
             //TODO Refactor this in a separate function
             std::cout << "What is the name of the user?" << std::endl;
-            std::string name_input;
-            while(!(std::cin >> name_input)){
-                std::cout << "Invalid input. Please input a string." << std::endl;
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
-            }
+            std::string name_input = get_sanitized_name_input();
             std::cout << "What is their surname?" << std::endl;
-            std::string surname_input;
-            while(!(std::cin >> surname_input)){
-                std::cout << "Invalid input. Please input a string." << std::endl;
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
-            }
+            std::string surname_input = get_sanitized_name_input();
             auto new_user = adm->create_user(name_input, surname_input);
             current_user_id = new_user->get_id();
             std::cout << "Congratulation. You have created the user " << new_user->get_legal_name() << "!" << std::endl;
