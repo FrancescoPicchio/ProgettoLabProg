@@ -124,3 +124,56 @@ User* AppDataManager::create_user(const std::string &n, const std::string &s) {
     users[new_user->get_id()] = std::move(new_user);
     return raw_new_user_ptr;
 }
+
+bool AppDataManager::save_new_account_to_CSV(Account *a) {
+    std::ofstream file("accounts.csv", std::ios::app);
+    if(!file.is_open()){
+        std::cerr << "Error saving account " << a->get_name() << " to accounts.csv" << std::endl;
+        return false;
+    }
+    std::string data = std::to_string(a->get_id()) + ',' + a->get_name() + ',' + std::to_string(a->get_owner()->get_id()) + ',' + std::to_string(a->get_balance());
+    file << data << '\n';
+    file.close();
+    return true;
+}
+
+
+bool AppDataManager::save_transaction_to_CSV(Transaction *t) {
+    std::ofstream file("transactions.csv", std::ios::app);
+    if(!file.is_open()){
+        std::cerr << "Error saving transaction " << " to transactions.csv" << std::endl;
+        return false;
+    }
+    std::string data = std::to_string(t->get_sender()->get_id()) + ',' + std::to_string(t->get_receiver()->get_id()) + ',' + std::to_string(t->get_amount());
+    file << data << '\n';
+    file.close();
+    return true;
+}
+
+bool AppDataManager::update_account_balance_CSV(Account* account) {
+    // Load all accounts into memory, update one the rewrite the CSV file
+    std::vector<std::string> lines;
+    std::ifstream infile("accounts.csv");
+    std::string current_line;
+
+    while (std::getline(infile, current_line)) {
+        std::stringstream ss(current_line);
+        int id;
+        char comma;
+        ss >> id >> comma;
+
+        if (id == account->get_id()) {
+            current_line = std::to_string(account->get_id()) + "," + account->get_name() + "," + std::to_string(account->get_owner()->get_id()) + "," + std::to_string(account->get_balance());
+        }
+        lines.push_back(current_line);
+    }
+
+    infile.close();
+
+    std::ofstream outfile("accounts.csv", std::ios::trunc);
+    for (const auto& l : lines)
+        outfile << l << '\n';
+    outfile.close();
+
+    return true;
+}

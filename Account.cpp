@@ -30,7 +30,7 @@ std::vector<Transaction*> Account::get_transactions() const {
 };
 
 //Passing transactionManager so that I can notify it when the transaction is created
-bool Account::make_transaction(Account *receiver, int amount) {
+bool Account::make_transaction(Account *receiver, int amount, AppDataManager* adm) {
     //You can't send a negative amount of money
     if(amount <= 0){
         std::cout << "You've inputted a negative amount, please input a positive whole number" << std::endl;
@@ -40,17 +40,16 @@ bool Account::make_transaction(Account *receiver, int amount) {
     else if(this->get_balance() >= amount) {
         auto t =  std::make_shared<Transaction>(this, receiver, amount);
         add_transaction(t);
-        set_balance(get_balance() - amount);
+        remove_balance(amount, adm);
         receiver->add_transaction(t);
-        receiver->set_balance(receiver->get_balance() + amount);
-        if(!save_transaction_to_CSV(t.get()))
+        receiver->add_balance(amount, adm);
+        if(!adm->save_transaction_to_CSV(t.get())){
+            std::cout << "There was a problem updating transactions.csv." << std::endl;
             return false;
-        if(update_balance_CSV() && receiver->update_balance_CSV()) {
-            std::cout << "Transaction successful!" << std::endl;
+        }
+        else{
             return true;
         }
-        else
-            return false;
         }
     else {
         std::cout << "Not enough money in your account." << std::endl;
@@ -58,60 +57,29 @@ bool Account::make_transaction(Account *receiver, int amount) {
     }
 }
 
-void Account::print_transactionss() const {
+void Account::print_transactions() const {
     std::cout << this->get_name() << "'s transactions are:" << std::endl << std::endl;
     for(auto i : transactions){
         i->print_info();
     }
 }
 
-bool Account::save_transaction_to_CSV(Transaction *t) {
-    std::ofstream file("transactions.csv", std::ios::app);
-    if(!file.is_open()){
-        std::cerr << "Error saving transaction " << " to transactions.csv" << std::endl;
-        return false;
-    }
-    std::string data = std::to_string(t->get_sender()->get_id()) + ',' + std::to_string(t->get_receiver()->get_id()) + ',' + std::to_string(t->get_amount());
-    file << data << '\n';
-    file.close();
-    return true;
+void Account::set_balance(int b, AppDataManager* adm){
+    //Should only be called by AppDataManager when initializing the Accounts from CSV
+    balance = b;
+    adm->update_account_balance_CSV(this);
 }
 
-bool Account::update_balance_CSV() const {
-    std::ifstream original_file("accounts.csv");
-    std::ofstream updated_file("accounts_temp.csv");
-    std::string line, data;
-    std::string temp_id_account, temp_name, temp_id_owner, temp_balance;
-    std::ostringstream oss;
-
-    while(std::getline(original_file, line)){
-        std::stringstream ss(line);
-        oss.str("");
-        data = "";
-        if(std::getline(ss, temp_id_account, ',') && std::getline(ss, temp_name, ',') && std::getline(ss, temp_id_owner, ',') && std::getline(ss, temp_balance, ',')){
-            //checks if the current account is the same as this account
-            if(std::stoi(temp_id_account) != id){
-                //using oss to avoid having to concatenate in line a string with +, because it'd create many unecessary temporary strings
-                oss << temp_id_account << ',' << temp_name << ',' << temp_id_owner << ',' << temp_balance;
-                data.append(oss.str());
-                updated_file << data << '\n';
-            }
-            else {
-                //inputs updated balance if the temp_id matches with this account
-                oss << temp_id_account << ',' << temp_name << ',' << temp_id_owner << ',' << balance;
-                data.append(oss.str());
-                updated_file << data << '\n';
-            }
-        }
-        else {
-            std::cerr << "Error reading line from accounts.csv when updating balance of " << name << std::endl;
-            return false;
-        }
+void Account::add_balance(int b, AppDataManager* adm){
+    balance += b;
+    if(adm->update_account_balance_CSV(this)){
+        std::cout << "Balance was updated sucessfully for Account: " << get_name() << std::endl ;
     }
-    //files must be closed before removing and renaming them
-    original_file.close();
-    updated_file.close();
-    remove("accounts.csv");
-    rename("accounts_temp.csv", "accounts.csv");
-    return true;
+}
+
+void Account::remove_balance(int b, AppDataManager* adm){
+    balance -= b;
+    if(adm->update_account_balance_CSV(this)){
+        std::cout << "Balance was updated sucessfully for Account: " << get_name() << std::endl ;
+    }
 }

@@ -69,11 +69,11 @@ void make_new_transaction(AppDataManager* adm, Account* current_account){
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
-        amount_is_correct = current_account->make_transaction(adm->get_accounts().at(receiver_id), amount_for_transaction);
+        amount_is_correct = current_account->make_transaction(adm->get_accounts().at(receiver_id), amount_for_transaction, adm);
     }
 }
 
-void deposit_to_account(Account* current_account){
+void deposit_to_account(Account* current_account, AppDataManager* adm){
     space_out_prints();
     std::cout << "How much would you like to deposit?" << std::endl;
     int deposit_amount = 0;
@@ -82,7 +82,7 @@ void deposit_to_account(Account* current_account){
         std::cin.clear();
         std::cin.ignore(1000, '\n');
     }
-    current_account->add_balance(deposit_amount);
+    current_account->add_balance(deposit_amount, adm);
 }
 
 //Executes the logic for a specific account, which entails mostly making a transaction with another account.
@@ -105,16 +105,15 @@ bool run_account_menu(AppDataManager* adm, Account* current_account){
             continue;
         }
         space_out_prints();
-        //FIXME refactor so this if is a function
         //Makes a new transaction with another account
         if(input_choice == 1){
             make_new_transaction(adm, current_account);
         }
         else if(input_choice == 2){
-            deposit_to_account(current_account);
+            deposit_to_account(current_account, adm);
         }
         else if(input_choice == 3) {
-            current_account->print_transactionss();
+            current_account->print_transactions();
             system("pause");
             space_out_prints();
         }

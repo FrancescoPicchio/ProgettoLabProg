@@ -26,7 +26,7 @@ Account* User::open_account(std::string n, AppDataManager* adm) {
     std::unique_ptr<Account> new_account = std::make_unique<Account>(n, this, adm);
     //storing the raw pointer beause using std::move makes new_account a nullptr
     Account* account_raw_ptr = new_account.get();
-    if(!save_new_account_to_CSV(account_raw_ptr))
+    if(!adm->save_new_account_to_CSV(account_raw_ptr))
         return nullptr;
     accounts[new_account->get_id()] = std::move(new_account);
     return account_raw_ptr;
@@ -43,16 +43,4 @@ int User::get_total_balance() const {
         total_balance += i->second->get_balance();
     }
     return total_balance;
-}
-
-bool User::save_new_account_to_CSV(Account *a) {
-    std::ofstream file("accounts.csv", std::ios::app);
-    if(!file.is_open()){
-        std::cerr << "Error saving account " << a->get_name() << " to accounts.csv" << std::endl;
-        return false;
-    }
-    std::string data = std::to_string(a->get_id()) + ',' + a->get_name() + ',' + std::to_string(a->get_owner()->get_id()) + ',' + std::to_string(a->get_balance());
-    file << data << '\n';
-    file.close();
-    return true;
 }

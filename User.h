@@ -24,9 +24,7 @@ private:
         int id;
         //changed map to map accounts to their ids instead of names, make sure it doesn't create problems
         std::map<int, std::unique_ptr<Account>> accounts;
-
-        bool save_new_account_to_CSV(Account* a);
-
+        
 public:
     //TODO check if removing the definition of the constructor without i changes anything
         User(const std::string& n, const std::string& s, int i): name(n), surname(s), id(i) {};

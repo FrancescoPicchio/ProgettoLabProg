@@ -28,8 +28,11 @@ public:
     bool load_users();
     bool load_accounts();
     bool load_transactions();
-    //creates and saves to csv a new user
     User* create_user(const std::string& n, const std::string& s);
+    bool save_new_account_to_CSV(Account* a);
+    bool save_transaction_to_CSV(Transaction *t);
+    bool update_account_balance_CSV(Account* account);
+
     void add_account(Account* a){
         accounts[a->get_id()] = a;
     }

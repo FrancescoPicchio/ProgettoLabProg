@@ -41,24 +41,15 @@ public:
         return name;
     }
 
-    void set_balance(int b){
-        //FIXME should call AccountManager to update accounts.csv to its new balance
-        balance = b;
-    }
+    void set_balance(int b, AppDataManager* adm);
 
     int get_balance() const {
         return balance;
     }
 
-    void add_balance(int b){
-        //FIXME should call AccountManager to update accounts.csv to its new balance
-        balance += b;
-    }
+    void add_balance(int b, AppDataManager* adm);
 
-    void remove_balance(int b){
-        //FIXME should call AccountManager to update accounts.csv to its new balance
-        balance -= b;
-    }
+    void remove_balance(int b, AppDataManager* adm);
 
     User* get_owner() const {
         return owner;
@@ -70,7 +61,7 @@ public:
 
     void print_info() const;
 
-    bool make_transaction(Account *receiver, int amount);
+    bool make_transaction(Account *receiver, int amount, AppDataManager* adm);
 
     void add_transaction(const std::shared_ptr<Transaction> t) {
         transactions.push_back(t);
@@ -79,7 +70,7 @@ public:
     //Do not store this vector beyond the lifetime of the original shared_ptrs
     std::vector<Transaction*> get_transactions() const;
 
-    void print_transactionss() const;
+    void print_transactions() const;
 };
 
 

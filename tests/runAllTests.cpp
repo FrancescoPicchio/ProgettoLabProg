@@ -3,9 +3,9 @@
 #include "../Account.h"
 
 /*
-class MockAccountManager : public AccountManager {
+class MockAppDataManager : public AppDataManager {
 public:
-    explicit MockAccountManager(std::string fn): AccountManager(fn) {}
+    explicit MockAppDataManager(std::string fn): AppDataManager(fn) {}
     MOCK_METHOD(bool, saveAccount, (Account* acc), (override));
 };
 
@@ -22,14 +22,14 @@ protected:
     std::string account_name;
     int balance;
     std::map<int, Account*>* accounts_map;
-    MockAccountManager* mock_am;
+    MockAppDataManager* mock_am;
 
     void SetUp() override {
         mock_um = new MockUserManager("test");
         user = new User("name", "surname", 1, mock_um);
         account_name = "conto test";
         balance = 1000;
-        mock_am = new MockAccountManager("test");
+        mock_am = new MockAppDataManager("test");
     }
 
     void TearDown() override {
