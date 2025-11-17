@@ -7,8 +7,39 @@
 #include <fstream>
 #include <sstream>
 
+//creates csv files if they didn't exist
+void AppDataManager::load_csv_file(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) {  
+        std::ofstream newFile(filename);
+        if (newFile) {
+            //Initializes the id counter for the id counter files to 0
+            if(filename == "user_id_tracker.csv" || filename == "account_id_tracker.csv"){
+                newFile << "0";
+            }
+            std::cout << filename << " created successfully.\n";
+        } else {
+            std::cerr << "Error creating file '" << filename << "'.\n";
+            file.close();
+        }
+    } else {
+        std::cout << filename << " has been loaded.\n";
+        file.close();
+    }
+}
+
+void AppDataManager::load_all_csv_files(){
+    load_csv_file("accounts.csv");
+    load_csv_file("users.csv");
+    load_csv_file("transactions.csv");
+    load_csv_file("account_id_tracker.csv");
+    load_csv_file("user_id_tracker.csv");
+}
+
 //returns true only if it loads all the data from the different classes correctly
 bool AppDataManager::load_app_data() {
+    load_all_csv_files();
+
     bool usersLoaded = load_users();
     bool accountsLoaded = load_accounts();
     bool transactionsLoaded = load_transactions();

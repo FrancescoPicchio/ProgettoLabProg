@@ -41,11 +41,11 @@ public:
         return name;
     }
 
-    void set_balance(int b, AppDataManager* adm);
-
     int get_balance() const {
         return balance;
     }
+    //TODO Refactor these methods to have them validate themselves if the input is correct (i.e. positive)
+    void set_balance(int b, AppDataManager* adm);
 
     void add_balance(int b, AppDataManager* adm);
 

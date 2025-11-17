@@ -24,11 +24,15 @@ private:
     std::string accountsFile = "accounts.csv";
     std::string transactionsFile = "transactions.csv";
 public:
+    void load_csv_file(const std::string& filename);
+    void load_all_csv_files();
     bool load_app_data();
     bool load_users();
     bool load_accounts();
     bool load_transactions();
+
     User* create_user(const std::string& n, const std::string& s);
+
     bool save_new_account_to_CSV(Account* a);
     bool save_transaction_to_CSV(Transaction *t);
     bool update_account_balance_CSV(Account* account);

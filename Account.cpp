@@ -37,7 +37,7 @@ bool Account::make_transaction(Account *receiver, int amount, AppDataManager* ad
         return false;
     }
     //You can't send money you don't have
-    else if(this->get_balance() >= amount) {
+    else if(get_balance() >= amount) {
         auto t =  std::make_shared<Transaction>(this, receiver, amount);
         add_transaction(t);
         remove_balance(amount, adm);
@@ -58,7 +58,7 @@ bool Account::make_transaction(Account *receiver, int amount, AppDataManager* ad
 }
 
 void Account::print_transactions() const {
-    std::cout << this->get_name() << "'s transactions are:" << std::endl << std::endl;
+    std::cout << get_name() << "'s transactions are:" << std::endl << std::endl;
     for(auto i : transactions){
         i->print_info();
     }

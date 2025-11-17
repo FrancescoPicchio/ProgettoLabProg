@@ -14,3 +14,6 @@ compile_commands.json
 
 # Ignores all the csv files
 *.csv
+
+MenuHelpers.cpp
+MenuHelpers.h

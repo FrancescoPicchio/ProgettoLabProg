@@ -1,31 +1,11 @@
 #include <iostream>
 #include <fstream>
-#include "User.h"
 #include "AppDataManager.h"
 
-//TODO Maybe add this inside the load_data function of AppDataManager
-void load_data(const std::string& filename) {
-    std::ifstream file(filename);  // Try to open the file
-    if (!file) {  // If file doesn't exist
-        std::ofstream newFile(filename);  // Create the file
-        if (newFile) {
-            //initializes id counter if it didn't exist
-            if(filename == "user_id_tracker.csv" || filename == "account_id_tracker.csv"){
-                newFile << "0";
-            }
-            std::cout << filename << " created successfully.\n";
-        } else {
-            std::cerr << "Error creating file '" << filename << "'.\n";
-            file.close();
-        }
-    } else {
-        std::cout << filename << " has been loaded.\n";
-        file.close();
-    }
-}
+//TODO Add (maybe) menu functions and (absolutely) their helper functions in separate files for easier testing
 
+//Prints 5 newlines to help with legibility
 void space_out_prints() {
-    //Prints 5 newlines to help with legibility
     int i;
     for(i = 0; i < 5; i++) {
         std::cout << std::endl;
@@ -42,6 +22,7 @@ std::string get_sanitized_name_input(){
             std::cin.ignore(1000, '\n');
         }
         else{
+            //TODO refactor this into a function, so it's more easily testable
             //Removes commas to avoid issues with csv files. std::erase works only for C++20
             std::erase(new_name, ',');
             if(new_name.empty()){
@@ -59,6 +40,7 @@ std::string get_sanitized_name_input(){
 
 
 void make_new_transaction(AppDataManager* adm, Account* current_account){
+    //TODO Maybe split some of this code into functions for easier testing
     space_out_prints();
     std::cout << "Who do you want to send the money to? Give the Id of the account that'll receive the money" << std::endl;
     bool key_exists = false;
@@ -215,6 +197,26 @@ bool select_account(AppDataManager* adm, User* current_user){
         }
 }
 
+bool open_new_account(AppDataManager* adm, User* current_user){
+    int current_account_id;
+
+    std::cout << "Please input your new Account's name" << std::endl;
+    std::string new_account_name = get_sanitized_name_input();
+
+    Account* new_account = current_user->open_account(new_account_name, adm);
+    current_account_id = new_account->get_id();
+    std::cout << "New Account " << new_account->get_name() << " was created successfully." << std::endl;
+
+    Account* current_account = adm->get_accounts().at(current_account_id);
+    //accesses the Account submenu as the newly opened Account, condition is true only if the program user selects 0 from the Account submenu
+    if(!(run_account_menu(adm, current_account))){
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 //Executes the logic once a program user has logged in, which consists of accessing an Account or opening a new one. 
 //Returns false only if the User wants to exit the program.
 bool run_user_menu(AppDataManager* adm, User* current_user){
@@ -234,13 +236,13 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
             std::cout << "Invalid input, please input a number from the choices!" << std::endl << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            //resets the loop if the input is wrong, so it can print out the possible choices. Pauses to give the user time to read the error message
+            //Resets the loop if the input is wrong, so it can print out the possible choices
             system("pause");
             space_out_prints();
             continue;
         }
         space_out_prints();
-        //Access account logic
+        //Access Account logic
         if(input_choice == 1){
             if(select_account(adm, current_user)){
                 continue;
@@ -251,34 +253,26 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
         }
         //Opens a new Account for the User
         else if(input_choice == 2){
-            //TODO refactor this into a separate function
-            std::cout << "Please input your new Account's name" << std::endl;
-            std::string new_account_name = get_sanitized_name_input();
-            Account* new_account = current_user->open_account(new_account_name, adm);
-            current_account_id = new_account->get_id();
-            std::cout << "New Account " << new_account->get_name() << " was created successfully." << std::endl;
-            Account* current_account = adm->get_accounts().at(current_account_id);
-            //accesses the Account submenu as the newly created user, condition is true only if the program user selects 0 from the Account submenu
-            if(!(run_account_menu(adm, current_account))){
-                return false;
-            }
-            else {
+            if(open_new_account(adm, current_user)) {
                 continue;
             }
+            else {
+                return false;
+            }
         }
-        //prints out the current User's Accounts and their total balance
+        //Prints out the current User's Accounts and their total balance
         else if(input_choice == 3){
             current_user->print_accounts();
             std::cout << "And their total balance is: " << current_user->get_total_balance() << std::endl;
-            //gives user time to see their accounts and balance
+            //gives User time to see their Accounts and balance
             system("pause");
             continue;
         }
-        //returns to main loop and stays in the loop
+        //Returns to the main menu loop
         else if(input_choice == 4){
             return true;
         }
-        //returns to main and quits the program
+        //Quits the program
         else if(input_choice == 0){
             return false;
         }
@@ -287,27 +281,79 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            //pauses until another input to give time to the user to read the error message
             system("pause");
             space_out_prints();
         }
     }
 }
 
+bool access_user_menu(AppDataManager* adm) {
+    std::cout << "Please input the Id for the user you want to access as" << std::endl;
+    bool key_exists = false;
+    int current_user_id;
+    while(!key_exists){
+        //checks if input choice is actually an int and not something else
+        while(!(std::cin >> current_user_id)) {
+            std::cout << "Invalid input. Please input a positive integer." << std::endl;
+                std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        }
+        //contains only works in C++ 20
+        if(adm->get_users().contains(current_user_id)){
+            key_exists = true;
+        }
+        else {
+            std::cout << "The Id that you have inputted belongs to no User. Please try a different Id" << std::endl;
+                std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        }
+    }
+    User* current_user = adm->get_users().at(current_user_id).get();
+    //condition is true only if the program user has exited the User menu with a 0
+    if(!(run_user_menu(adm, current_user))){
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+bool create_new_user(AppDataManager* adm) {
+    int current_user_id;
+
+    std::cout << "What is the name of the user?" << std::endl;
+    std::string name_input = get_sanitized_name_input();
+
+    std::cout << "What is their surname?" << std::endl;
+    std::string surname_input = get_sanitized_name_input();
+
+    auto new_user = adm->create_user(name_input, surname_input);
+    current_user_id = new_user->get_id();
+    std::cout << "Congratulation. You have created the user " << new_user->get_legal_name() << "!" << std::endl;
+    std::cout << "The new user's Id is " << current_user_id << ". Remember it if you'll want to access this user again." << std::endl;
+    //pauses the program and gives time to read the id of the new User object
+    system("pause");
+    space_out_prints();
+    User* current_user = adm->get_users().at(current_user_id).get();
+
+    //condition is true only if the program user has exited the User menu with a 0
+    if(!(run_user_menu(adm, current_user))){
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 
 int main() {
-    load_data("users.csv");
-    load_data("accounts.csv");
-    load_data("transactions.csv");
-    load_data("user_id_tracker.csv");
-    load_data("account_id_tracker.csv");
-    space_out_prints();
 
     auto *adm = new AppDataManager();
     if(!adm->load_app_data()) {
         std::cout << "There was a problem loading the data" << std::endl;
         return 0;
     }
+    space_out_prints();
     //initialized at a value different from all those present in the next while loop
     int input_choice;
     //variables to keep track of the user that is being used at the moment
@@ -327,54 +373,27 @@ int main() {
             std::cin.ignore(1000, '\n');
         }
         space_out_prints();
-        //Program user wants to access a User
+        //Lets program user access their own User
         if(input_choice == 1) {
-            //TODO refactor this in a separate function
-            std::cout << "Please input the Id for the user you want to access as" << std::endl;
-            bool key_exists = false;
-            while(!key_exists){
-                //checks if input choice is actually an int and not something else
-                while(!(std::cin >> current_user_id)) {
-                    std::cout << "Invalid input. Please input a positive integer." << std::endl;
-                     std::cin.clear();
-                    std::cin.ignore(1000, '\n');
-                }
-                //contains only works in C++ 20
-                if(adm->get_users().contains(current_user_id)){
-                    key_exists = true;
-                }
-                else {
-                    std::cout << "The Id that you have inputted belongs to no User. Please try a different Id" << std::endl;
-                     std::cin.clear();
-                    std::cin.ignore(1000, '\n');
-                }
+            if(access_user_menu(adm)) {
+                continue;
             }
-            User* current_user = adm->get_users().at(current_user_id).get();
-            //condition is true only if the program user has exited the User menu with a 0
-            if(!(run_user_menu(adm, current_user))){
+            else {
+                //exits out of the while loop if user in user menu inputs 0
                 break;
             }
         }
-        //Program user wants to create a new User object
+        //Lets program user create a new User
         else if(input_choice == 2) {
-            //TODO Refactor this in a separate function
-            std::cout << "What is the name of the user?" << std::endl;
-            std::string name_input = get_sanitized_name_input();
-            std::cout << "What is their surname?" << std::endl;
-            std::string surname_input = get_sanitized_name_input();
-            auto new_user = adm->create_user(name_input, surname_input);
-            current_user_id = new_user->get_id();
-            std::cout << "Congratulation. You have created the user " << new_user->get_legal_name() << "!" << std::endl;
-            std::cout << "The new user's Id is " << current_user_id << ". Remember it if you'll want to access this user again." << std::endl;
-            //pauses the program and gives time to read the id of the new User object
-            system("pause");
-            space_out_prints();
-            User* current_user = adm->get_users().at(current_user_id).get();
-            //condition is true only if the program user has exited the User menu with a 0
-            if(!(run_user_menu(adm, current_user))){
+            if(create_new_user(adm)) {
+                continue;
+            }
+            else {
+                //exits out of the while loop if user in user menu inputs 0
                 break;
             }
         }
+        //Prints existing Users
         else if(input_choice == 3) {
             space_out_prints();
             std::cout << "The Users that currently exist are:" << std::endl;
@@ -384,7 +403,7 @@ int main() {
             system("pause");
             space_out_prints();
         }
-        //ends the loop if input_choice is 0
+        //Ends the loop and exits the program
         else if(input_choice == 0) {
             break;
         }
