@@ -11,7 +11,7 @@
 #include <sstream>
 
 Account::Account(std::string n, User *u, AppDataManager* adm): name(n), owner(u), balance(0){
-    id = generate_next_id("account_id_tracker.csv");
+    id = generate_next_id(adm->getAccountIdTrackerFileName());
     adm->add_account(this);
 }
 

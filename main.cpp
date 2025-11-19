@@ -7,7 +7,7 @@
 //Prints 5 newlines to help with legibility
 void space_out_prints() {
     int i;
-    for(i = 0; i < 5; i++) {
+    for(i = 0; i < 3; i++) {
         std::cout << std::endl;
     }
 }
@@ -221,7 +221,6 @@ bool open_new_account(AppDataManager* adm, User* current_user){
 //Returns false only if the User wants to exit the program.
 bool run_user_menu(AppDataManager* adm, User* current_user){
     int input_choice;
-    int current_account_id;
     while(true) {
         //TODO Add option to delete your User profile
         //Operations that can be made with a given User
@@ -354,10 +353,7 @@ int main() {
         return 0;
     }
     space_out_prints();
-    //initialized at a value different from all those present in the next while loop
     int input_choice;
-    //variables to keep track of the user that is being used at the moment
-    int current_user_id;
 
     std::cout << "Welcome. This program simulates a bank system." << std::endl << "You can create a User, who can open an Account" << std::endl << "and make Transactions with your Accounts." << std::endl << std::endl;
 

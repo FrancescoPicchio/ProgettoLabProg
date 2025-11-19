@@ -20,10 +20,21 @@ class AppDataManager {
 private:
     std::map<int, std::unique_ptr<User>> users;
     std::map<int, Account*> accounts;
-    std::string usersFile = "users.csv";
-    std::string accountsFile = "accounts.csv";
-    std::string transactionsFile = "transactions.csv";
+    std::string usersFile;
+    std::string accountsFile;
+    std::string transactionsFile;
+    std::string userIdTrackerFile;
+    std::string accountIdTrackerFile;
 public:
+    //Use custom file names when testing, for safety
+    AppDataManager(std::string uf="users.csv", std::string af="accounts.csv", std::string tf="transactions.csv", std::string uidf="user_id_tracker.csv", std::string aidf="account_id_tracker.csv"){
+        usersFile = uf;
+        accountsFile = af;
+        transactionsFile = tf;
+        userIdTrackerFile = uidf;
+        accountIdTrackerFile = aidf;
+    }
+
     void load_csv_file(const std::string& filename);
     void load_all_csv_files();
     bool load_app_data();
@@ -45,6 +56,10 @@ public:
     }
     const std::map<int, Account*>& get_accounts() const {
         return accounts;
+    }
+
+    std::string getAccountIdTrackerFileName(){
+        return accountIdTrackerFile;
     }
 };
 

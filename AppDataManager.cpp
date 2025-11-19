@@ -14,7 +14,7 @@ void AppDataManager::load_csv_file(const std::string& filename) {
         std::ofstream newFile(filename);
         if (newFile) {
             //Initializes the id counter for the id counter files to 0
-            if(filename == "user_id_tracker.csv" || filename == "account_id_tracker.csv"){
+            if(filename == userIdTrackerFile || filename == accountIdTrackerFile){
                 newFile << "0";
             }
             std::cout << filename << " created successfully.\n";
@@ -29,11 +29,11 @@ void AppDataManager::load_csv_file(const std::string& filename) {
 }
 
 void AppDataManager::load_all_csv_files(){
-    load_csv_file("accounts.csv");
-    load_csv_file("users.csv");
-    load_csv_file("transactions.csv");
-    load_csv_file("account_id_tracker.csv");
-    load_csv_file("user_id_tracker.csv");
+    load_csv_file(accountsFile);
+    load_csv_file(usersFile);
+    load_csv_file(transactionsFile);
+    load_csv_file(accountIdTrackerFile);
+    load_csv_file(userIdTrackerFile);
 }
 
 //returns true only if it loads all the data from the different classes correctly
@@ -138,7 +138,7 @@ bool AppDataManager::load_transactions() {
 }
 
 User* AppDataManager::create_user(const std::string &n, const std::string &s) {
-    int id = generate_next_id("user_id_tracker.csv");
+    int id = generate_next_id(userIdTrackerFile);
     auto new_user = std::make_unique<User>(n, s, id);
     User* raw_new_user_ptr = new_user.get();
 
@@ -157,7 +157,7 @@ User* AppDataManager::create_user(const std::string &n, const std::string &s) {
 }
 
 bool AppDataManager::save_new_account_to_CSV(Account *a) {
-    std::ofstream file("accounts.csv", std::ios::app);
+    std::ofstream file(accountsFile, std::ios::app);
     if(!file.is_open()){
         std::cerr << "Error saving account " << a->get_name() << " to accounts.csv" << std::endl;
         return false;
@@ -170,7 +170,7 @@ bool AppDataManager::save_new_account_to_CSV(Account *a) {
 
 
 bool AppDataManager::save_transaction_to_CSV(Transaction *t) {
-    std::ofstream file("transactions.csv", std::ios::app);
+    std::ofstream file(transactionsFile, std::ios::app);
     if(!file.is_open()){
         std::cerr << "Error saving transaction " << " to transactions.csv" << std::endl;
         return false;
@@ -184,7 +184,7 @@ bool AppDataManager::save_transaction_to_CSV(Transaction *t) {
 bool AppDataManager::update_account_balance_CSV(Account* account) {
     // Load all accounts into memory, update one the rewrite the CSV file
     std::vector<std::string> lines;
-    std::ifstream infile("accounts.csv");
+    std::ifstream infile(accountsFile);
     std::string current_line;
 
     while (std::getline(infile, current_line)) {
@@ -201,7 +201,7 @@ bool AppDataManager::update_account_balance_CSV(Account* account) {
 
     infile.close();
 
-    std::ofstream outfile("accounts.csv", std::ios::trunc);
+    std::ofstream outfile(accountsFile, std::ios::trunc);
     for (const auto& l : lines)
         outfile << l << '\n';
     outfile.close();
