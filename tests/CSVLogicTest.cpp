@@ -59,6 +59,24 @@ TEST_F(CSVLogicTest, SaveNewAccountToCSV) {
 }
 
 //TODO write test for save new transaction
+TEST_F(CSVLogicTest, SaveNewTransactionToCSV) {
+    auto user =  User("Andy", "Johnson", 1);
+    auto account1 =  Account(1, "AccountTest1", &user, 500);
+    auto account2 = Account(2, "AccountTest2", &user, 200);
+    auto transaction = Transaction(&account1, &account2, 100);
+
+    ASSERT_TRUE(adm->save_transaction_to_CSV(&transaction));
+
+    ASSERT_TRUE(std::filesystem::exists(transactionTestFile));
+    std::ifstream file(transactionTestFile);
+    std::string line;
+    std::getline(file, line);
+    file.close();
+
+    std::string expected = "1,2,100";
+    ASSERT_EQ(line, expected);
+}
+
 //TODO write test for update account balance
 
 //TODO maybe write a separate test file or fixture for the loads
