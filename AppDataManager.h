@@ -23,16 +23,16 @@ private:
     std::string usersFile;
     std::string accountsFile;
     std::string transactionsFile;
-    std::string userIdTrackerFile;
-    std::string accountIdTrackerFile;
+    std::string user_id_tracker_test_file;
+    std::string account_id_tracker_test_file;
 public:
     //Use custom file names when testing, for safety
     AppDataManager(std::string uf="users.csv", std::string af="accounts.csv", std::string tf="transactions.csv", std::string uidf="user_id_tracker.csv", std::string aidf="account_id_tracker.csv"){
         usersFile = uf;
         accountsFile = af;
         transactionsFile = tf;
-        userIdTrackerFile = uidf;
-        accountIdTrackerFile = aidf;
+        user_id_tracker_test_file = uidf;
+        account_id_tracker_test_file = aidf;
     }
 
     void load_csv_file(const std::string& filename);
@@ -59,7 +59,7 @@ public:
     }
 
     std::string getAccountIdTrackerFileName(){
-        return accountIdTrackerFile;
+        return account_id_tracker_test_file;
     }
 };
 

@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <filesystem>
 #include "../Account.h"
 #include "../User.h"
 #include "../AppDataManager.h"
@@ -8,7 +9,7 @@
 class BankLogicTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        adm = new AppDataManager(usersTestFile, accountTestFile, transactionTestFile, userIdTrackerFile, accountIdTrackerFile);
+        adm = new AppDataManager(user_test_file, accounts_test_file, transactions_test_file, user_id_tracker_test_file, account_id_tracker_test_file);
         //initializes the csv files correctly
         adm->load_app_data();
         userA = adm->create_user("Andy", "Johnson");
@@ -22,11 +23,11 @@ protected:
         delete adm;
         //Cleans up csv files that were initialized with AppDataManager
         //Using the class attributes gives a compiler error. Not sure why
-        std::remove("users_test.csv");
-        std::remove("accounts_test.csv");
-        std::remove("transactions_test.csv");
-        std::remove("user_id_tracker_test.csv");
-        std::remove("account_id_tracker_test.csv");
+        std::filesystem::remove(user_test_file);
+        std::filesystem::remove(accounts_test_file);
+        std::filesystem::remove(transactions_test_file);
+        std::filesystem::remove(user_id_tracker_test_file);
+        std::filesystem::remove(account_id_tracker_test_file);
     }
 
     Account* accountA1;
@@ -35,11 +36,11 @@ protected:
     User* userA;
     User* userB;
     AppDataManager* adm;
-    std::string usersTestFile = "users_test.csv";
-    std::string accountTestFile = "accounts_test.csv";
-    std::string transactionTestFile = "transactions_test.csv";
-    std::string userIdTrackerFile = "user_id_tracker_test.csv";
-    std::string accountIdTrackerFile = "account_id_tracker_test.csv";
+    std::string user_test_file = "users_test.csv";
+    std::string accounts_test_file = "accounts_test.csv";
+    std::string transactions_test_file = "transactions_test.csv";
+    std::string user_id_tracker_test_file = "user_id_tracker_test.csv";
+    std::string account_id_tracker_test_file = "account_id_tracker_test.csv";
 };
 
 TEST_F(BankLogicTest, UserConstructorTest) {

@@ -9,31 +9,31 @@
 class CSVLogicTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        adm = new AppDataManager(usersTestFile, accountTestFile, transactionTestFile, userIdTrackerFile, accountIdTrackerFile);
+        adm = new AppDataManager(user_test_file, accounts_test_file, transactions_test_file, user_id_tracker_test_file, account_id_tracker_test_file);
     }
     void TearDown() override {
         delete adm;
-        std::remove("users_test.csv");
-        std::remove("accounts_test.csv");
-        std::remove("transactions_test.csv");
-        std::remove("user_id_tracker_test.csv");
-        std::remove("account_id_tracker_test.csv");
+        std::filesystem::remove(user_test_file);
+        std::filesystem::remove(accounts_test_file);
+        std::filesystem::remove(transactions_test_file);
+        std::filesystem::remove(user_id_tracker_test_file);
+        std::filesystem::remove(account_id_tracker_test_file);
     }
 
     AppDataManager* adm;
-    std::string usersTestFile = "users_test.csv";
-    std::string accountTestFile = "accounts_test.csv";
-    std::string transactionTestFile = "transactions_test.csv";
-    std::string userIdTrackerFile = "user_id_tracker_test.csv";
-    std::string accountIdTrackerFile = "account_id_tracker_test.csv";
+    std::string user_test_file = "users_test.csv";
+    std::string accounts_test_file = "accounts_test.csv";
+    std::string transactions_test_file = "transactions_test.csv";
+    std::string user_id_tracker_test_file = "user_id_tracker_test.csv";
+    std::string account_id_tracker_test_file = "account_id_tracker_test.csv";
 };
 
 TEST_F(CSVLogicTest, SaveNewUserToCSV){
     auto user = adm->create_user("Andy", "Johnson");
 
-    ASSERT_TRUE(std::filesystem::exists(usersTestFile));
+    ASSERT_TRUE(std::filesystem::exists(user_test_file));
 
-    std::ifstream file(usersTestFile);
+    std::ifstream file(user_test_file);
     std::string line;
     std::getline(file, line);
     file.close();
@@ -48,8 +48,8 @@ TEST_F(CSVLogicTest, SaveNewAccountToCSV) {
 
     ASSERT_TRUE(adm->save_new_account_to_CSV(&account));
 
-    ASSERT_TRUE(std::filesystem::exists(accountTestFile));
-    std::ifstream file(accountTestFile);
+    ASSERT_TRUE(std::filesystem::exists(accounts_test_file));
+    std::ifstream file(accounts_test_file);
     std::string line;
     std::getline(file, line);
     file.close();
@@ -58,7 +58,6 @@ TEST_F(CSVLogicTest, SaveNewAccountToCSV) {
     ASSERT_EQ(line, expected);
 }
 
-//TODO write test for save new transaction
 TEST_F(CSVLogicTest, SaveNewTransactionToCSV) {
     auto user =  User("Andy", "Johnson", 1);
     auto account1 =  Account(1, "AccountTest1", &user, 500);
@@ -67,8 +66,8 @@ TEST_F(CSVLogicTest, SaveNewTransactionToCSV) {
 
     ASSERT_TRUE(adm->save_transaction_to_CSV(&transaction));
 
-    ASSERT_TRUE(std::filesystem::exists(transactionTestFile));
-    std::ifstream file(transactionTestFile);
+    ASSERT_TRUE(std::filesystem::exists(transactions_test_file));
+    std::ifstream file(transactions_test_file);
     std::string line;
     std::getline(file, line);
     file.close();
@@ -78,6 +77,12 @@ TEST_F(CSVLogicTest, SaveNewTransactionToCSV) {
 }
 
 //TODO write test for update account balance
+TEST_F(CSVLogicTest, UpdatingBalanceToCSV) {
+    auto user = User("Andy", "Johnson", 1);
+    auto account = Account(1, "AccountTest", &user, 0);
+
+    ASSERT_TRUE(account.set_balance(200,adm));
+}
 
 //TODO maybe write a separate test file or fixture for the loads
 //TODO write test for load users

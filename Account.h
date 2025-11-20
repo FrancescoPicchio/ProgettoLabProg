@@ -45,11 +45,11 @@ public:
         return balance;
     }
     //TODO Refactor these methods to have them validate themselves if the input is correct (i.e. positive)
-    void set_balance(int b, AppDataManager* adm);
+    bool set_balance(int b, AppDataManager* adm);
 
-    void add_balance(int b, AppDataManager* adm);
+    bool add_balance(int b, AppDataManager* adm);
 
-    void remove_balance(int b, AppDataManager* adm);
+    bool remove_balance(int b, AppDataManager* adm);
 
     User* get_owner() const {
         return owner;

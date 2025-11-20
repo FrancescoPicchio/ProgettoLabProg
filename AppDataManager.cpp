@@ -14,7 +14,7 @@ void AppDataManager::load_csv_file(const std::string& filename) {
         std::ofstream newFile(filename);
         if (newFile) {
             //Initializes the id counter for the id counter files to 0
-            if(filename == userIdTrackerFile || filename == accountIdTrackerFile){
+            if(filename == user_id_tracker_test_file || filename == account_id_tracker_test_file){
                 newFile << "0";
             }
             std::cout << filename << " created successfully.\n";
@@ -32,8 +32,8 @@ void AppDataManager::load_all_csv_files(){
     load_csv_file(accountsFile);
     load_csv_file(usersFile);
     load_csv_file(transactionsFile);
-    load_csv_file(accountIdTrackerFile);
-    load_csv_file(userIdTrackerFile);
+    load_csv_file(account_id_tracker_test_file);
+    load_csv_file(user_id_tracker_test_file);
 }
 
 //returns true only if it loads all the data from the different classes correctly
@@ -138,7 +138,7 @@ bool AppDataManager::load_transactions() {
 }
 
 User* AppDataManager::create_user(const std::string &n, const std::string &s) {
-    int id = generate_next_id(userIdTrackerFile);
+    int id = generate_next_id(user_id_tracker_test_file);
     auto new_user = std::make_unique<User>(n, s, id);
     User* raw_new_user_ptr = new_user.get();
 
