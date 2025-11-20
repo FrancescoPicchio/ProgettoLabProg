@@ -4,15 +4,14 @@
 #include "../AppDataManager.h"
 #include "../Transaction.h"
 
-//FIXME Change BankLogicTest class name and file name to something more appropriate
-//for example BusinessLogicTest
+
 class BankLogicTest : public ::testing::Test {
 protected:
     void SetUp() override {
         adm = new AppDataManager(usersTestFile, accountTestFile, transactionTestFile, userIdTrackerFile, accountIdTrackerFile);
         //initializes the csv files correctly
         adm->load_app_data();
-        userA = adm->create_user("Andy", "Doe");
+        userA = adm->create_user("Andy", "Johnson");
         userB = adm->create_user("Beatrice", "Smith");
         accountA1 = userA->open_account("AndyFirstAccount", adm);
         accountA2 = userA->open_account("AndySecondAccount", adm);
@@ -21,7 +20,8 @@ protected:
 
     void TearDown() override {
         delete adm;
-        //cleans up csv files that were initialized with AppDataManager
+        //Cleans up csv files that were initialized with AppDataManager
+        //Using the class attributes gives a compiler error. Not sure why
         std::remove("users_test.csv");
         std::remove("accounts_test.csv");
         std::remove("transactions_test.csv");
@@ -43,9 +43,9 @@ protected:
 };
 
 TEST_F(BankLogicTest, UserConstructorTest) {
-    EXPECT_EQ(userA->get_legal_name(), "Andy Doe");
+    EXPECT_EQ(userA->get_legal_name(), "Andy Johnson");
     EXPECT_EQ(userA->get_name(), "Andy");
-    EXPECT_EQ(userA->get_surname(), "Doe");
+    EXPECT_EQ(userA->get_surname(), "Johnson");
     EXPECT_EQ(userA->get_id(), 1);
     EXPECT_EQ(userA->get_total_balance(), 0);
     EXPECT_EQ(userA->get_account(accountA1->get_id()), accountA1);

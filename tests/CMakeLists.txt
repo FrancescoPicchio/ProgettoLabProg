@@ -5,7 +5,8 @@ FetchContent_Declare(googletest URL https://github.com/google/googletest/archive
 FetchContent_MakeAvailable(googletest)
 
 
-add_executable(runTests AccountTest.cpp
+add_executable(runTests BankLogicTest.cpp
+        CSVLogicTest.cpp
         ../User.cpp
         ../Account.cpp
         ../Transaction.cpp
