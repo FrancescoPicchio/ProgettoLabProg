@@ -6,6 +6,16 @@
 #include "../AppDataManager.h"
 #include "../Transaction.h"
 
+namespace { //added to avoid conflicts with other similarly named functions in test suite
+    std::string getLineFromCSV(std::string filename){
+        std::ifstream file(filename);
+        std::string line;
+        std::getline(file, line);
+        file.close();
+        return line;
+    }
+}
+
 class CSVLogicTest : public ::testing::Test {
 protected:
     void SetUp() override {
@@ -31,8 +41,6 @@ protected:
 TEST_F(CSVLogicTest, SaveNewUserToCSV){
     auto user = adm->create_user("Andy", "Johnson");
 
-    ASSERT_TRUE(std::filesystem::exists(user_test_file));
-
     std::ifstream file(user_test_file);
     std::string line;
     std::getline(file, line);
@@ -48,12 +56,7 @@ TEST_F(CSVLogicTest, SaveNewAccountToCSV) {
 
     ASSERT_TRUE(adm->save_new_account_to_CSV(&account));
 
-    ASSERT_TRUE(std::filesystem::exists(accounts_test_file));
-    std::ifstream file(accounts_test_file);
-    std::string line;
-    std::getline(file, line);
-    file.close();
-
+    auto line = getLineFromCSV(accounts_test_file);
     std::string expected = "10,AccountTest,1,500";
     ASSERT_EQ(line, expected);
 }
@@ -66,22 +69,51 @@ TEST_F(CSVLogicTest, SaveNewTransactionToCSV) {
 
     ASSERT_TRUE(adm->save_transaction_to_CSV(&transaction));
 
-    ASSERT_TRUE(std::filesystem::exists(transactions_test_file));
-    std::ifstream file(transactions_test_file);
-    std::string line;
-    std::getline(file, line);
-    file.close();
-
+    auto line = getLineFromCSV(transactions_test_file);
     std::string expected = "1,2,100";
     ASSERT_EQ(line, expected);
 }
 
-//TODO write test for update account balance
 TEST_F(CSVLogicTest, UpdatingBalanceToCSV) {
     auto user = User("Andy", "Johnson", 1);
-    auto account = Account(1, "AccountTest", &user, 0);
+    auto account = user.open_account("AccountTest", adm);
 
-    ASSERT_TRUE(account.set_balance(200,adm));
+    //Testing for correct inputs
+    ASSERT_TRUE(account->set_balance(200,adm));
+    auto line = getLineFromCSV(accounts_test_file);
+    std::string expected = "1,AccountTest,1,200";
+    ASSERT_EQ(line, expected);
+
+    ASSERT_TRUE(account->add_balance(300,adm));
+    line = getLineFromCSV(accounts_test_file);
+    expected = "1,AccountTest,1,500";
+    ASSERT_EQ(line, expected);
+
+    ASSERT_TRUE(account->remove_balance(100,adm));
+    line = getLineFromCSV(accounts_test_file);
+    expected = "1,AccountTest,1,400";
+    ASSERT_EQ(line, expected);
+
+    //Testing for wrong input
+    ASSERT_FALSE(account->add_balance(-200,adm));
+    line = getLineFromCSV(accounts_test_file);
+    ASSERT_EQ(line, expected);
+
+    ASSERT_FALSE(account->remove_balance(-200,adm));
+    line = getLineFromCSV(accounts_test_file);
+    ASSERT_EQ(line, expected);
+
+    ASSERT_FALSE(account->remove_balance(10000,adm));
+    line = getLineFromCSV(accounts_test_file);
+    ASSERT_EQ(line, expected);
+
+    ASSERT_FALSE(account->add_balance(0,adm));
+    line = getLineFromCSV(accounts_test_file);
+    ASSERT_EQ(line, expected);
+
+    ASSERT_FALSE(account->remove_balance(0,adm));
+    line = getLineFromCSV(accounts_test_file);
+    ASSERT_EQ(line, expected);
 }
 
 //TODO maybe write a separate test file or fixture for the loads

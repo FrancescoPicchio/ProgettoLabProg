@@ -96,11 +96,7 @@ bool Account::add_balance(int b, AppDataManager* adm){
     }
     else{
         balance += b;
-        if(adm->update_account_balance_CSV(this)){
-            return true;
-        }
-        else 
-            return false;
+        return adm->update_account_balance_CSV(this);
     }
 }
 
@@ -115,10 +111,6 @@ bool Account::remove_balance(int b, AppDataManager* adm){
     }
     else {
         balance -= b;
-        if(adm->update_account_balance_CSV(this)){
-            return true;
-        }
-        else
-            return false;
+        return adm->update_account_balance_CSV(this);
     }
 }
