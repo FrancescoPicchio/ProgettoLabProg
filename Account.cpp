@@ -25,34 +25,6 @@ std::vector<Transaction*> Account::get_transactions() const {
     return raw_ptrs;
 };
 
-/*
-//Passing transactionManager so that I can notify it when the transaction is created
-bool Account::make_transaction(Account *receiver, int amount, AppDataManager* adm) {
-    //You can't send a negative amount of money
-    if(amount <= 0){
-        std::cout << "You've inputted a negative amount, please input a positive whole number" << std::endl;
-        return false;
-    }
-    //You can't send money you don't have
-    else if(get_balance() >= amount) {
-        auto t =  std::make_shared<Transaction>(this, receiver, amount);
-        add_transaction(t);
-        remove_balance(amount, adm);
-        receiver->add_transaction(t);
-        receiver->add_balance(amount, adm);
-        if(!adm->save_transaction_to_CSV(t.get())){
-            std::cout << "There was a problem updating transactions.csv." << std::endl;
-            return false;
-        }
-        else{
-            return true;
-        }
-        }
-    else {
-        std::cout << "Not enough money in your account." << std::endl;
-        return false;
-    }
-}*/
 
 bool Account::make_transaction(Account *receiver, int amount, AppDataManager* adm) {
     int receiver_original_balance = receiver->get_balance();

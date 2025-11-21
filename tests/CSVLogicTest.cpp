@@ -6,7 +6,7 @@
 #include "../AppDataManager.h"
 #include "../Transaction.h"
 
-namespace { //added to avoid conflicts with other similarly named functions in test suite
+namespace { //added anonymous namespace to avoid conflicts with other possibly similarly named functions in gtest
     std::string getLineFromCSV(std::string filename){
         std::ifstream file(filename);
         std::string line;
@@ -74,44 +74,50 @@ TEST_F(CSVLogicTest, SaveNewTransactionToCSV) {
     ASSERT_EQ(line, expected);
 }
 
-TEST_F(CSVLogicTest, UpdatingBalanceToCSV) {
+TEST_F(CSVLogicTest, UpdatingBalanceToCSVCorrectly) {
     auto user = User("Andy", "Johnson", 1);
-    auto account = user.open_account("AccountTest", adm);
+    auto account = Account("AccountTest", &user, adm);
+    adm->save_new_account_to_CSV(&account);
 
-    //Testing for correct inputs
-    ASSERT_TRUE(account->set_balance(200,adm));
+    ASSERT_TRUE(account.set_balance(200,adm));
     auto line = getLineFromCSV(accounts_test_file);
     std::string expected = "1,AccountTest,1,200";
     ASSERT_EQ(line, expected);
 
-    ASSERT_TRUE(account->add_balance(300,adm));
+    ASSERT_TRUE(account.add_balance(300,adm));
     line = getLineFromCSV(accounts_test_file);
     expected = "1,AccountTest,1,500";
     ASSERT_EQ(line, expected);
 
-    ASSERT_TRUE(account->remove_balance(100,adm));
+    ASSERT_TRUE(account.remove_balance(100,adm));
     line = getLineFromCSV(accounts_test_file);
     expected = "1,AccountTest,1,400";
     ASSERT_EQ(line, expected);
+}
 
-    //Testing for wrong input
-    ASSERT_FALSE(account->add_balance(-200,adm));
+TEST_F(CSVLogicTest, UpdatingBalanceToCSVIncorrectly) {
+    auto user = User("Andy", "Johnson", 1);
+    auto account = Account("AccountTest", &user, adm);
+    adm->save_new_account_to_CSV(&account);
+
+    ASSERT_FALSE(account.add_balance(-200,adm));
+    std::string line = getLineFromCSV(accounts_test_file);
+    std::string expected = "1,AccountTest,1,0";
+    ASSERT_EQ(line, expected);
+
+    ASSERT_FALSE(account.remove_balance(-300,adm));
     line = getLineFromCSV(accounts_test_file);
     ASSERT_EQ(line, expected);
 
-    ASSERT_FALSE(account->remove_balance(-200,adm));
+    ASSERT_FALSE(account.remove_balance(10000,adm));
     line = getLineFromCSV(accounts_test_file);
     ASSERT_EQ(line, expected);
 
-    ASSERT_FALSE(account->remove_balance(10000,adm));
+    ASSERT_FALSE(account.add_balance(0,adm));
     line = getLineFromCSV(accounts_test_file);
     ASSERT_EQ(line, expected);
 
-    ASSERT_FALSE(account->add_balance(0,adm));
-    line = getLineFromCSV(accounts_test_file);
-    ASSERT_EQ(line, expected);
-
-    ASSERT_FALSE(account->remove_balance(0,adm));
+    ASSERT_FALSE(account.remove_balance(0,adm));
     line = getLineFromCSV(accounts_test_file);
     ASSERT_EQ(line, expected);
 }

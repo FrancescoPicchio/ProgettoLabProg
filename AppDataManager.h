@@ -1,7 +1,3 @@
-//
-// Created by fpicc on 17/04/2025.
-//
-
 #ifndef PROGETTOLABPROG_APPDATAMANAGER_H
 #define PROGETTOLABPROG_APPDATAMANAGER_H
 

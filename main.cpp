@@ -4,7 +4,7 @@
 
 //TODO Add (maybe) menu functions and (absolutely) their helper functions in separate files for easier testing
 
-//Prints 5 newlines to help with legibility
+//Prints 3 newlines to help with legibility
 void space_out_prints() {
     int i;
     for(i = 0; i < 3; i++) {
@@ -22,7 +22,6 @@ std::string get_sanitized_name_input(){
             std::cin.ignore(1000, '\n');
         }
         else{
-            //TODO refactor this into a function, so it's more easily testable
             //Removes commas to avoid issues with csv files. std::erase works only for C++20
             std::erase(new_name, ',');
             if(new_name.empty()){

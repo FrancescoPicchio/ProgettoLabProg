@@ -1,7 +1,3 @@
-//
-// Created by fpicc on 07/03/2025.
-//
-
 #ifndef PROGETTOLABPROG_TRANSACTION_H
 #define PROGETTOLABPROG_TRANSACTION_H
 
@@ -9,8 +5,7 @@
 #include <iostream>
 #include <ctime>
 
-//forward declaration of TransactionManager to avoid circular dependency
-class TransactionManager;
+//added forward declaration to avoid circular dependency
 class Account;
 
 

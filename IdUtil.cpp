@@ -1,6 +1,3 @@
-//
-// Created by fpicc on 19/03/2025.
-//
 #include <fstream>
 #include "IdUtil.h"
 

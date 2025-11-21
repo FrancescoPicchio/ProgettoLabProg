@@ -1,7 +1,3 @@
-//
-// Created by fpicc on 17/04/2025.
-//
-
 #include "AppDataManager.h"
 #include <iostream>
 #include <fstream>

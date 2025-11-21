@@ -1,7 +1,3 @@
-//
-// Created by fpicc on 19/03/2025.
-//
-
 #ifndef PROGETTOLABPROG_IDUTIL_H
 #define PROGETTOLABPROG_IDUTIL_H
 
