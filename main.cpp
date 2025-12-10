@@ -14,16 +14,21 @@ void space_out_prints() {
 
 std::string get_sanitized_name_input(){
     std::string new_name;
+    std::string input;
     bool name_is_not_valid = true;
     while(name_is_not_valid){
-        if(!(std::cin >> new_name)){
+        if(!(std::cin >> input)){
             std::cout << "Invalid input." << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
         else{
-            //Removes commas to avoid issues with csv files. std::erase works only for C++20
-            std::erase(new_name, ',');
+            //deletes commas to avoid problems in csv files. If on C++20 you can use std::erase(input, ',')
+            for (char c : input) {
+            if (c != ',') {
+                new_name += c;
+                }
+            }
             if(new_name.empty()){
                 std::cout << "Invalid input." << std::endl;
                 std::cin.clear();
@@ -51,9 +56,8 @@ void make_new_transaction(AppDataManager* adm, Account* current_account){
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
-        //contains only works in C++20
-        if (!(adm->get_accounts().contains(receiver_id))) {
-            std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id" << std::endl;
+        if (adm->get_accounts().find(receiver_id) == adm->get_accounts().end()) {
+            std::cout << "The Id that you have inputted belongs to no Account. Please try a different Id. Else input 0 to return to the previous menu" << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
         } //Checks if the Account is trying to give itself money
@@ -61,7 +65,11 @@ void make_new_transaction(AppDataManager* adm, Account* current_account){
             std::cout << "You can't transfer money to the same Account!" << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-        } else {
+        }
+        else if(receiver_id == 0){
+            return;
+        }
+        else {
             key_exists = true;
         }
     }
@@ -169,8 +177,7 @@ bool select_account(AppDataManager* adm, User* current_user){
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-            //contains only works in C++ 20 
-            if(adm->get_accounts().contains(current_account_id)){
+            if(adm->get_accounts().find(current_account_id) != adm->get_accounts().end()){
                 if(current_user->get_id() == adm->get_accounts().at(current_account_id)->get_owner()->get_id()) {
                     key_exists = true;
                 }
@@ -293,16 +300,18 @@ bool access_user_menu(AppDataManager* adm) {
         //checks if input choice is actually an int and not something else
         while(!(std::cin >> current_user_id)) {
             std::cout << "Invalid input. Please input a positive integer." << std::endl;
-                std::cin.clear();
+            std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
-        //contains only works in C++ 20
-        if(adm->get_users().contains(current_user_id)){
+        if(adm->get_users().find(current_user_id) != adm->get_users().end()){
             key_exists = true;
         }
+        else if(current_user_id == 0) {
+            return true;
+        }
         else {
-            std::cout << "The Id that you have inputted belongs to no User. Please try a different Id" << std::endl;
-                std::cin.clear();
+            std::cout << "The Id that you have inputted belongs to no User. Please try a different Id, or input 0 to return to previous menu" << std::endl;
+            std::cin.clear();
             std::cin.ignore(1000, '\n');
         }
     }

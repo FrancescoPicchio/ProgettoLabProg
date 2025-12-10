@@ -11,6 +11,3 @@ and if there aren't it'll populate the folder with the needed .csv files.
 
 If you run it from an ide in debug mode the files will be created at a different location (in my case in the same plase as the .cpp and .h project files
 when using vscode).
-
-## Possible Compatibility Issues:
-The project uses `std::erase` and `std::map.contains(key)` which are only available in C++ 20.
