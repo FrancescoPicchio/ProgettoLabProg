@@ -22,7 +22,6 @@ private:
         std::map<int, std::unique_ptr<Account>> accounts;
         
 public:
-    //TODO check if removing the definition of the constructor without i changes anything
         User(const std::string& n, const std::string& s, int i): name(n), surname(s), id(i) {};
 
         void add_account(std::unique_ptr<Account> a){
@@ -32,7 +31,6 @@ public:
 
         //This should be the only way to create an account, otherwise there'll be problems with double deletion. accounts_map can be omitted
         Account* open_account(std::string n, AppDataManager* adm);
-        //TODO you can make User a friend class of Account to make it so only it can access its constructor
 
         //returns true if the User has at least one account, returns false if it doesn't have any accoutns
         bool print_accounts() const;

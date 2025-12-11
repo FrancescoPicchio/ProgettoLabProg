@@ -15,7 +15,6 @@ private:
     Account* receiver;
     int amount;
     std::string date;
-    //int fee = 0; //TODO implement fee, it should be different depending on if the transaction is between accounts of the same user or not, and maybe other stuff
 
 public:
     //Never call this directly, always use make_transaction

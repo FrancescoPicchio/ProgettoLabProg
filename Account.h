@@ -17,10 +17,8 @@ class Account {
 private:
     int id;
     std::string name;
-    //TODO implement account types
-    //TODO implement associated banks for accounts, if two accounts make a transaction with different associated banks there's a fee
     User* owner;
-    //FIXME should be a double and not a int maybe
+    //FIXME should be a double and not an int, maybe
     int balance;
     std::vector <std::shared_ptr<Transaction>> transactions;
 
@@ -40,7 +38,7 @@ public:
     int get_balance() const {
         return balance;
     }
-    //TODO Refactor these methods to have them validate themselves if the input is correct (i.e. positive)
+
     bool set_balance(int b, AppDataManager* adm);
 
     bool add_balance(int b, AppDataManager* adm);

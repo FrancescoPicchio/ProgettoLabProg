@@ -2,7 +2,6 @@
 #include <fstream>
 #include "AppDataManager.h"
 
-//TODO Add (maybe) menu functions and (absolutely) their helper functions in separate files for easier testing
 
 //Prints 3 newlines to help with legibility
 void space_out_prints() {
@@ -10,6 +9,14 @@ void space_out_prints() {
     for(i = 0; i < 3; i++) {
         std::cout << std::endl;
     }
+}
+
+void pause_execution(){
+    std::cout << "\nPress Enter to continue...";
+    std::cin.ignore(1000, '\n');
+    std::cin.get();
+    std::cin.ignore(1000, '\n');
+    return;
 }
 
 std::string get_sanitized_name_input(){
@@ -44,7 +51,6 @@ std::string get_sanitized_name_input(){
 
 
 void make_new_transaction(AppDataManager* adm, Account* current_account){
-    //TODO Maybe split some of this code into functions for easier testing
     space_out_prints();
     std::cout << "Who do you want to send the money to? Give the Id of the account that'll receive the money" << std::endl;
     bool key_exists = false;
@@ -117,7 +123,7 @@ bool run_account_menu(AppDataManager* adm, Account* current_account){
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            system("pause");
+            pause_execution();
             space_out_prints();
             continue;
         }
@@ -131,7 +137,7 @@ bool run_account_menu(AppDataManager* adm, Account* current_account){
         }
         else if(input_choice == 3) {
             current_account->print_transactions();
-            system("pause");
+            pause_execution();
             space_out_prints();
         }
         else if(input_choice == 4) {
@@ -140,7 +146,7 @@ bool run_account_menu(AppDataManager* adm, Account* current_account){
             for(auto i : adm->get_accounts()){
                 i.second->print_info();
             }
-            system("pause");
+            pause_execution();
             space_out_prints();
         }
         else if(input_choice == 5) {
@@ -153,7 +159,7 @@ bool run_account_menu(AppDataManager* adm, Account* current_account){
         else {
             space_out_prints();
             std::cout << "Please input a number associated with a choice." << std::endl;
-            system("pause");
+            pause_execution();
             space_out_prints();
         }
     }
@@ -163,7 +169,7 @@ bool run_account_menu(AppDataManager* adm, Account* current_account){
 bool select_account(AppDataManager* adm, User* current_user){
     int current_account_id;
     if(!current_user->print_accounts()) {
-            system("pause");
+            pause_execution();
             space_out_prints();
             return false;
         }
@@ -242,7 +248,7 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             //Resets the loop if the input is wrong, so it can print out the possible choices
-            system("pause");
+            pause_execution();
             space_out_prints();
             continue;
         }
@@ -269,8 +275,7 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
         else if(input_choice == 3){
             current_user->print_accounts();
             std::cout << "And their total balance is: " << current_user->get_total_balance() << std::endl;
-            //gives User time to see their Accounts and balance
-            system("pause");
+            pause_execution();
             continue;
         }
         //Returns to the main menu loop
@@ -286,7 +291,7 @@ bool run_user_menu(AppDataManager* adm, User* current_user){
             std::cout << "Invalid input, there's no choice associated with that number!" << std::endl << std::endl;
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            system("pause");
+            pause_execution();
             space_out_prints();
         }
     }
@@ -338,8 +343,7 @@ bool create_new_user(AppDataManager* adm) {
     current_user_id = new_user->get_id();
     std::cout << "Congratulation. You have created the user " << new_user->get_legal_name() << "!" << std::endl;
     std::cout << "The new user's Id is " << current_user_id << ". Remember it if you'll want to access this user again." << std::endl;
-    //pauses the program and gives time to read the id of the new User object
-    system("pause");
+    pause_execution();
     space_out_prints();
     User* current_user = adm->get_users().at(current_user_id).get();
 
@@ -404,7 +408,7 @@ int main() {
             for(auto i = adm->get_users().begin(); i != adm->get_users().end(); i++){
                 std::cout << i->second->get_legal_name() << " and their Id is: " << i->second->get_id() << std::endl;
             }
-            system("pause");
+            pause_execution();
             space_out_prints();
         }
         //Ends the loop and exits the program
@@ -413,7 +417,7 @@ int main() {
         }
         else {
             std::cout << "Invalid input. Please input a number among the ones in the options." << std::endl;
-            system("pause");
+            pause_execution();
             space_out_prints();
         }
     }
