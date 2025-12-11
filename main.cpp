@@ -14,8 +14,12 @@ void space_out_prints() {
 void pause_execution(){
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(1000, '\n');
-    std::cin.get();
-    std::cin.ignore(1000, '\n');
+    // Only proceed when the next character is just a newline
+    int c = std::cin.get();
+    while (c != '\n') {
+        std::cin.ignore(1000, '\n');
+        c = std::cin.get();
+    }
     return;
 }
 
@@ -171,7 +175,7 @@ bool select_account(AppDataManager* adm, User* current_user){
     if(!current_user->print_accounts()) {
             pause_execution();
             space_out_prints();
-            return false;
+            return true;
         }
         std::cout << "Please input the id of one of your Accounts to access it." << std::endl;
         space_out_prints();
@@ -217,7 +221,9 @@ bool open_new_account(AppDataManager* adm, User* current_user){
 
     Account* new_account = current_user->open_account(new_account_name, adm);
     current_account_id = new_account->get_id();
+    space_out_prints();
     std::cout << "New Account " << new_account->get_name() << " was created successfully." << std::endl;
+    pause_execution();
 
     Account* current_account = adm->get_accounts().at(current_account_id);
     //accesses the Account submenu as the newly opened Account, condition is true only if the program user selects 0 from the Account submenu
@@ -341,6 +347,7 @@ bool create_new_user(AppDataManager* adm) {
 
     auto new_user = adm->create_user(name_input, surname_input);
     current_user_id = new_user->get_id();
+    space_out_prints();
     std::cout << "Congratulation. You have created the user " << new_user->get_legal_name() << "!" << std::endl;
     std::cout << "The new user's Id is " << current_user_id << ". Remember it if you'll want to access this user again." << std::endl;
     pause_execution();
